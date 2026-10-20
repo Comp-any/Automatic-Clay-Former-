@@ -1,0 +1,12 @@
+{
+  "type": "code",
+  "name": "Automatic Clay Former",
+  "modid": "clayformerprescko",
+  "version": "1.3.0",
+  "description": "prescko update to 1.22",
+  "authors": [ "rekimchuk13" ],
+  "dependencies": {
+    "game": "1.22.0"
+  },
+  "side": "Client"
+}
