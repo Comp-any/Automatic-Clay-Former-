@@ -61,7 +61,7 @@ dotnet build AutomaticClayFormer.csproj -c Release -p:VintageStoryDir="/path/to/
 
 A Release build writes the mod zip to `release/`. You can also set the `VINTAGE_STORY` environment variable instead of passing `VintageStoryDir`.
 
-GitHub Actions builds every push against the official Vintage Story server files, runs the tests, and uploads the zip as a build artifact. Pushing a tag like `v2.0.0` also publishes a GitHub release with the zip.
+GitHub Actions builds every push against the official Vintage Story server files, runs the tests, and uploads the zip as a build artifact. To publish a release, run **Actions → Build → Run workflow** with **Publish** ticked: it tags `v` + the version in `modinfo.json` and puts the zip on the release, with `RELEASE_NOTES.md` as its notes. Pushing a tag like `v2.0.0` does the same.
 
 ### Tests
 

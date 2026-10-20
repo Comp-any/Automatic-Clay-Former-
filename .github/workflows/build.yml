@@ -6,6 +6,11 @@ on:
     tags: [ 'v*' ]
   pull_request:
   workflow_dispatch:
+    inputs:
+      release:
+        description: "Publish the mod zip as a GitHub release (tag v + the version in modinfo.json)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -92,8 +97,23 @@ jobs:
           path: release/*.zip
           if-no-files-found: error
 
+      # Runs for a pushed v* tag, or for "Run workflow" with Publish ticked (which makes the tag from modinfo.json).
       - name: Publish release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.release)
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" release/*.zip --title "$GITHUB_REF_NAME" --generate-notes
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION=$(jq -r .version modinfo.json)
+          TAG="v$VERSION"
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "$GITHUB_REF_NAME" != "$TAG" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME doesn't match the version in modinfo.json ($VERSION)"; exit 1
+          fi
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" release/*.zip --clobber
+          else
+            gh release create "$TAG" release/*.zip --target "$GITHUB_SHA" \
+              --title "Automatic Clay Former $VERSION" --notes-file RELEASE_NOTES.md
+          fi
+          echo "::notice title=Released::$TAG with $(ls release/*.zip | xargs -n1 basename)"
