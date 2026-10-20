@@ -16,7 +16,8 @@ What was tested from a Claude session on 2026-10-20 (this can change, so still t
 | | Pushing a tag (`git push origin v2.0.0`: HTTP 403), and making one through the API (`POST repos/.../git/refs`: "Write access to this GitHub API path is not permitted through this proxy"). Publish through the workflow instead (below) |
 | `gh workflow run` (workflow_dispatch) | `repos/.../actions/permissions` |
 | Reading runs, jobs and steps: `gh api repos/.../actions/runs`, `.../runs/<id>/jobs`, `gh run watch <id>` | Job logs and artifact downloads: they redirect to `*.blob.core.windows.net`, which is blocked |
-| Check-run annotations: `gh api repos/.../check-runs/<job id>/annotations` | GraphQL (`gh repo view`, `gh pr list`): use `gh api` REST calls instead |
+| Check-run annotations: `gh api repos/.../check-runs/<job id>/annotations` | GraphQL (`gh repo view`, `gh pr list`, `gh release download`): use `gh api` REST calls instead |
+| Downloading a release file: `gh api -H "Accept: application/octet-stream" repos/.../releases/assets/<asset id> > file` | |
 | GitHub itself (`git clone`, `github.com`) | NuGet, `cdn.vintagestory.at`, apt and Microsoft's .NET downloads: the workspace has no .NET SDK, so builds happen on GitHub Actions |
 
 ## Building and reading CI results
