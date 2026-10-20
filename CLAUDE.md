@@ -27,5 +27,8 @@ files and runs `tests/PlannerTests`. Since job logs can't be read from a session
 puts the end of its output into an annotation (read it with the check-runs annotations call above), and the
 test results are notices on the run. To publish a release, run the workflow with `release=true`:
 `gh workflow run build.yml -R demonic69/Automatic-Clay-Former- --ref main -f release=true`. It makes the tag
-(`v` + the version in `modinfo.json`) and the release itself, with `RELEASE_NOTES.md` as its notes. Do that
-only when the user asks.
+(`v` + the version in `modinfo.json`) and the release itself, with `RELEASE_NOTES.md` as its notes.
+
+**Always publish each new version** once its build and tests pass, without asking first (the user's
+instruction, 2026-10-20). The one exception: if you asked the user a question about that work and they haven't
+answered, wait for the answer. Bump the version in `modinfo.json` and update `RELEASE_NOTES.md` first.
