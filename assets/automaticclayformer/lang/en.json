@@ -1,0 +1,18 @@
+{
+	"prefix": "[Clay Former]",
+	"msg-started": "Forming {0}...",
+	"msg-finished": "Finished {0}.",
+	"msg-noclay": "Out of clay. Hold clay of the same type as the form to keep going.",
+	"msg-noserver": "This server doesn't have Automatic Clay Former installed, so it can't charge clay for automatic forming. Automatic forming is off on this server.",
+	"msg-stalled": "The server isn't accepting changes to this clay form (out of reach, or no permission here?). Trying again in {0} seconds.",
+
+	"on": "on",
+	"off": "off",
+	"cmd-status": "Automatic forming: {0}. Range: {1} blocks (your reach is {2}). Speed: {3} clicks per second. Chat messages: {4}. Change with .clayformer on|off|range|speed|messages",
+	"cmd-on": "Automatic clay forming turned on.",
+	"cmd-off": "Automatic clay forming turned off.",
+	"cmd-range": "Range set to {0} blocks. Your reach is {1} blocks, so forming happens up to whichever is smaller.",
+	"cmd-speed": "Speed set to {0} clicks per second.",
+	"cmd-messages-on": "Chat messages turned on.",
+	"cmd-messages-off": "Chat messages turned off. Problems like running out of clay are still shown."
+}

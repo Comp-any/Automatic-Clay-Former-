@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Simulation test for the forming planner. Runs it against every vanilla clay forming recipe (read from a Vintage
+    Story install) using a copy of the vanilla clay form rules, and checks that every click only moves the form
+    towards the recipe, that it always finishes, and how much clay it uses.
+
+    Run it with: dotnet run -c Release -p:VintageStoryDir=(game folder), then the game folder again as the program argument.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <VintageStoryDir Condition="'$(VintageStoryDir)' == ''">$(VINTAGE_STORY)</VintageStoryDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="../../src/FormingPlanner.cs" Link="FormingPlanner.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The game ships Newtonsoft.Json, which reads the game's relaxed JSON (comments, unquoted keys) -->
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(VintageStoryDir)/Lib/Newtonsoft.Json.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>AutomaticClayFormer</AssemblyName>
+    <RootNamespace>AutomaticClayFormer</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+    <!-- Keep in sync with modinfo.json -->
+    <ModId>automaticclayformer</ModId>
+    <Version>2.0.0</Version>
+
+    <!--
+      Folder of a Vintage Story install (client or server) to compile against.
+      Set the VINTAGE_STORY environment variable, or pass -p:VintageStoryDir=...
+    -->
+    <VintageStoryDir Condition="'$(VintageStoryDir)' == ''">$(VINTAGE_STORY)</VintageStoryDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="tests/**" />
+    <None Remove="tests/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="VintagestoryAPI">
+      <HintPath>$(VintageStoryDir)/VintagestoryAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VSSurvivalMod">
+      <HintPath>$(VintageStoryDir)/Mods/VSSurvivalMod.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(VintageStoryDir)/Lib/0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>$(VintageStoryDir)/Lib/protobuf-net.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CheckVintageStoryDir" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(VintageStoryDir)/VintagestoryAPI.dll')" Text="Vintage Story not found. Set the VINTAGE_STORY environment variable to your game folder, or build with -p:VintageStoryDir=&lt;game folder&gt;" />
+  </Target>
+
+  <!-- Release builds also produce the mod zip in release/ -->
+  <Target Name="PackageMod" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <PropertyGroup>
+      <ModStageDir>$(MSBuildProjectDirectory)/bin/modstage</ModStageDir>
+      <ModZip>$(MSBuildProjectDirectory)/release/$(ModId)_$(Version).zip</ModZip>
+    </PropertyGroup>
+    <ItemGroup>
+      <ModRootFiles Include="$(TargetPath);$(MSBuildProjectDirectory)/modinfo.json;$(MSBuildProjectDirectory)/modicon.png" />
+      <ModAssetFiles Include="$(MSBuildProjectDirectory)/assets/**/*.*" />
+    </ItemGroup>
+    <RemoveDir Directories="$(ModStageDir)" />
+    <Copy SourceFiles="@(ModRootFiles)" DestinationFolder="$(ModStageDir)" />
+    <Copy SourceFiles="@(ModAssetFiles)" DestinationFiles="@(ModAssetFiles->'$(ModStageDir)/assets/%(RecursiveDir)%(Filename)%(Extension)')" />
+    <MakeDir Directories="$(MSBuildProjectDirectory)/release" />
+    <ZipDirectory SourceDirectory="$(ModStageDir)" DestinationFile="$(ModZip)" Overwrite="true" />
+    <Message Importance="high" Text="Mod packaged: $(ModZip)" />
+  </Target>
+
+</Project>

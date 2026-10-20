@@ -1,12 +1,15 @@
 {
   "type": "code",
   "name": "Automatic Clay Former",
-  "modid": "clayformerprescko",
-  "version": "1.3.0",
-  "description": "prescko update to 1.22",
-  "authors": [ "rekimchuk13" ],
+  "modid": "automaticclayformer",
+  "version": "2.0.0",
+  "description": "Hold clay near a clay form with a recipe selected and it shapes itself. Uses clay exactly like forming by hand. Range and speed are configurable with .clayformer",
+  "authors": [ "demonic69", "prescko", "rekimchuk13" ],
+  "website": "https://github.com/demonic69/Automatic-Clay-Former-",
+  "side": "Universal",
+  "requiredOnClient": false,
+  "requiredOnServer": false,
   "dependencies": {
     "game": "1.22.0"
-  },
-  "side": "Client"
+  }
 }

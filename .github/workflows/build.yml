@@ -1,0 +1,99 @@
+name: Build
+
+on:
+  push:
+    branches: [ '**' ]
+    tags: [ 'v*' ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Game version to compile and test against. The mod itself works on 1.22.0 and later (see modinfo.json).
+  VS_VERSION: "1.22.7"
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Cache Vintage Story server files
+        id: cache-vs
+        uses: actions/cache@v4
+        with:
+          path: ~/vsgame
+          key: vs-server-${{ env.VS_VERSION }}-v1
+
+      - name: Download Vintage Story server
+        if: steps.cache-vs.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ~/vsgame
+          url="https://cdn.vintagestory.at/gamefiles/stable/vs_server_linux-x64_${VS_VERSION}.tar.gz"
+          if ! curl -fsSL --retry 3 -o /tmp/vs_server.tar.gz "$url"; then
+            echo "Direct download failed, looking the file up in the version list"
+            url=$(curl -fsSL https://api.vintagestory.at/stable.json | jq -r --arg v "$VS_VERSION" '.[$v].linuxserver.urls.cdn // empty')
+            if [ -z "$url" ]; then echo "::error::No Linux server download found for Vintage Story $VS_VERSION"; exit 1; fi
+            curl -fsSL --retry 3 -o /tmp/vs_server.tar.gz "$url"
+          fi
+          tar -xzf /tmp/vs_server.tar.gz -C ~/vsgame
+
+      - name: Locate game files
+        shell: bash
+        run: |
+          set -euo pipefail
+          api=$(find ~/vsgame -maxdepth 3 -name VintagestoryAPI.dll | head -n 1)
+          if [ -z "$api" ]; then echo "::error::VintagestoryAPI.dll not found in the server download"; exit 1; fi
+          dir=$(dirname "$api")
+          echo "VS_GAME_DIR=$dir" >> "$GITHUB_ENV"
+          for f in VintagestoryAPI.dll Mods/VSSurvivalMod.dll Lib/0Harmony.dll Lib/protobuf-net.dll Lib/Newtonsoft.Json.dll assets/survival/recipes/clayforming; do
+            if [ -e "$dir/$f" ]; then echo "found $f"; else echo "::warning::missing $f in the server download"; fi
+          done
+
+      # On failure, the end of the output is also shown as an annotation on the run, so it can be read without the log.
+      - name: Build mod
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! dotnet build AutomaticClayFormer.csproj -c Release -p:VintageStoryDir="$VS_GAME_DIR" 2>&1 | tee build.log; then
+            msg=$(grep -E "error|warning CS" build.log | sort -u | tail -n 40 | sed 's/%/%25/g' | sed ':a;N;$!ba;s/\n/%0A/g')
+            echo "::error title=Build failed::$msg"
+            exit 1
+          fi
+
+      - name: Test forming planner against all vanilla clay recipes
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! dotnet run --project tests/PlannerTests/PlannerTests.csproj -c Release -p:VintageStoryDir="$VS_GAME_DIR" -- "$VS_GAME_DIR" 2>&1 | tee test.log; then
+            msg=$(grep -vE "^::" test.log | grep -vE " ok$" | tail -n 60 | sed 's/%/%25/g' | sed ':a;N;$!ba;s/\n/%0A/g')
+            echo "::error title=Test output::$msg"
+            exit 1
+          fi
+
+      - name: Upload mod zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: automaticclayformer
+          path: release/*.zip
+          if-no-files-found: error
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" release/*.zip --title "$GITHUB_REF_NAME" --generate-notes

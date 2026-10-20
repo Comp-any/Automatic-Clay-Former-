@@ -1,84 +1,78 @@
-# 🏺 Automatic Clay Former (Unofficial Update)
+# Automatic Clay Former
 
-> Client-side automation mod for **Vintage Story 1.22** — fully automates clay forming and removes repetitive voxel work.  
-> Original mod by **rekimchuk13**.
+A Vintage Story 1.22 mod that shapes clay forms for you. Place clay, pick a recipe, hold clay of the same type, and the form shapes itself. It uses clay exactly like forming by hand.
 
-[![VS Version](https://img.shields.io/badge/Vintage%20Story-1.22-8B5CF6?style=flat-square)](https://www.vintagestory.at/)
-[![Side](https://img.shields.io/badge/Side-Client%20Only-22C55E?style=flat-square)]()
-[![Type](https://img.shields.io/badge/Type-QoL%20Automation-F59E0B?style=flat-square)]()
-[![Original Author](https://img.shields.io/badge/Original-rekimchuk13-0EA5E9?style=flat-square)](https://mods.vintagestory.at/show/mod/26337)
+Based on [Automatic Clay Former](https://mods.vintagestory.at/show/mod/26337) by **rekimchuk13** and the [1.22 update](https://github.com/prescko/Automatic-Clay-Former-V1.22) by **prescko**.
 
----
+## How to use
 
-## 📌 Overview
+1. Place clay on the ground (sneak + right click) and pick a recipe, as usual.
+2. Hold clay of the same type as the form.
+3. The nearest clay form in range gets shaped, a few clicks at a time. Run out of clay and it pauses until you hold more.
 
-Tired of endless clicking while forming clay?
+## Install
 
-**Automatic Clay Former** removes the manual voxel-by-voxel process and replaces it with full automation.
+Put the mod zip in your `Mods` folder.
 
-Just select a recipe — the mod handles everything automatically.
+- **Single player:** that's all.
+- **Multiplayer:** the server needs the mod too, because the server is what takes clay from your inventory. If a server doesn't have it, automatic forming stays off there (you'll get a chat message) instead of forming for free. Players without the mod can still join a server that has it.
 
-> 🧠 Less clicking. More crafting.
+## Settings
 
----
+Type `.clayformer` in chat to see the current settings.
 
-## ⚙️ How It Works
+| Command | What it does |
+| --- | --- |
+| `.clayformer on` / `.clayformer off` | Turn automatic forming on or off |
+| `.clayformer range <blocks>` | How far away forms get shaped, 1 to 16. The game only accepts clay forming within your reach (4.5 blocks in survival), so higher values only help if your reach is longer. |
+| `.clayformer speed <clicks per second>` | How fast it works, 1 to 100. Default 20. Lower it if you see voxels flicker on a laggy server. |
+| `.clayformer messages on` / `off` | Chat messages when forming starts and finishes. Problems like running out of clay are always shown. |
 
-```text
-1. Place clay on the ground
-2. Select a clay recipe
-3. Hold clay in hand
-4. Mod automatically completes voxel shaping
+Settings are saved to `ModConfig/AutomaticClayFormer.json`, which you can also edit while the game is closed:
+
+```json
+{
+  "Enabled": true,
+  "Range": 4.5,
+  "ActionsPerSecond": 20.0,
+  "ChatMessages": true
+}
 ```
 
-Everything is handled in real time without manual interaction.
+## Changes from the 1.22 update by prescko
 
----
+- **Clay is used properly.** Each add costs clay the same way forming by hand does: when the form's voxel pool is empty, one clay is taken from your hand for 25 more voxels. Before, only the clay used to place the form was ever taken.
+- **No more crash when leaving a world.** The old cleanup code called itself forever, which overflowed the stack and closed the game without an error.
+- **Much less flickering of "ghost" voxels.** The old version used the Duplicate Layer tool as if it worked where you click (it fills the first 4 cells in the layer), placed voxels it then had to remove, and replayed cached clicks from a different starting shape. Every click now only moves the form towards the recipe.
+- **Respects your reach.** Game 1.22.4 and later reject clay forming beyond your reach. The old version worked forms up to 6 blocks away, so the server kept undoing its changes in an endless loop. Range is now capped at your reach, and if the server keeps rejecting changes it backs off instead of spamming.
+- **One form at a time, with the right clay.** With two forms in range, the old version ran two workers that kept switching each other's tool, and it accepted any item with "clay" in its name. Now it works the nearest form whose clay type matches what you hold.
+- **Configurable range and speed** (see above).
+- **Tool mode synced through the mod's own channel** instead of a hand-built internal game packet that could break with game updates.
+- Messages are actually translated (the old ones showed raw keys like `clayformer:msg-started`).
 
-## ✨ Features
+## Building
 
-- 🤖 Fully automatic clay forming  
-- 🧱 Vanilla system integration  
-- 🖱️ Removes repetitive clicking  
-- ⚡ Faster crafting workflow  
-- 🧩 Client-side only (no server changes)  
+You need the .NET 10 SDK and a Vintage Story install (client or server) to compile against.
 
----
-
-## ⚠️ Known Issue
-
-### 🪨 Infinite Clay Exploit
-
-The mod currently consumes only **1 clay item per craft**, even if the recipe requires more.
-
-This may result in unintended resource duplication.
-
----
-
-## 🧠 Notes
-
-- This is an **unofficial update for Vintage Story 1.22**  
-- Original author: **rekimchuk13**  
-- This update only ensures compatibility with newer versions  
-- Core design and logic belong to the original creator  
-
----
-
-## 🔗 Credits
-
-```
-Original Mod: Automatic Clay Former  
-Author: rekimchuk13  
+```bash
+# Point at your game folder, e.g. %APPDATA%\Vintagestory on Windows
+dotnet build AutomaticClayFormer.csproj -c Release -p:VintageStoryDir="/path/to/Vintagestory"
 ```
 
----
+A Release build writes the mod zip to `release/`. You can also set the `VINTAGE_STORY` environment variable instead of passing `VintageStoryDir`.
 
-## 📄 Summary
+GitHub Actions builds every push against the official Vintage Story server files, runs the tests, and uploads the zip as a build artifact. Pushing a tag like `v2.0.0` also publishes a GitHub release with the zip.
 
-> Automatic Clay Former is a client-side QoL mod that fully automates clay forming by removing manual voxel shaping and replacing it with a recipe-driven system.
+### Tests
 
----
+`tests/PlannerTests` runs the forming logic against every vanilla clay forming recipe, plus hundreds of random shapes, using a copy of the game's clay form rules. It checks that every click only moves the form towards the recipe, that every recipe gets finished, and that clay use is in line with the game's own estimate.
 
-## 🏷️ Tags
+```bash
+dotnet run --project tests/PlannerTests/PlannerTests.csproj -c Release -p:VintageStoryDir="/path/to/Vintagestory" -- "/path/to/Vintagestory"
+```
 
-`vintage-story` `mod` `client-side` `automation` `clay-forming` `quality-of-life`
+## Credits
+
+- Original mod: **rekimchuk13**
+- 1.22 update: **prescko**
+- Clay charging, bug fixes and settings: **demonic69**
