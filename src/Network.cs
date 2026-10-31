@@ -9,6 +9,13 @@ namespace AutomaticClayFormer
     [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
     public class ToolModeRequest
     {
+        /// <summary>
+        /// Mode of the "hello" the client sends once on joining: this game has the mod (2.1.0 or newer), so it can
+        /// take /clayformer settings from the server. It's a ToolModeRequest rather than a new message type so a
+        /// 2.0.0 server, which doesn't know newer types, just ignores it as an invalid tool mode.
+        /// </summary>
+        public const int Hello = -21;
+
         public int X;
         public int Y;
         public int Z;
@@ -27,5 +34,25 @@ namespace AutomaticClayFormer
         public int X;
         public int Y;
         public int Z;
+    }
+
+    /// <summary>
+    /// Server to client: the player typed /clayformer. The settings live in each player's own game (their
+    /// ModConfig), so the server passes the command on and the player's game applies it and shows the result.
+    /// Only sent to games that said hello (2.1.0 or newer), which know this message type.
+    /// </summary>
+    [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
+    public class SettingsCommand
+    {
+        public const int Show = 0;
+        public const int On = 1;
+        public const int Off = 2;
+        public const int Range = 3;
+        public const int Speed = 4;
+        public const int Messages = 5;
+
+        public int Action;
+        public float Value;
+        public bool Flag;
     }
 }

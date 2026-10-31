@@ -32,12 +32,17 @@ namespace AutomaticClayFormer
         /// <summary>Players whose game has this mod. Only they get status messages.</summary>
         readonly HashSet<string> playersWithMod = new HashSet<string>();
 
+        /// <summary>Players whose game has 2.1.0 or newer (it said hello), so it takes /clayformer settings.</summary>
+        readonly HashSet<string> playersWithCommands = new HashSet<string>();
+
         // ---- Client side ----
 
         ICoreClientAPI capi;
         IClientNetworkChannel clientChannel;
         ClientFormer former;
         long tickListenerId;
+        long helloListenerId;
+        bool helloSent;
 
         public ClayFormerConfig Config { get; private set; } = new ClayFormerConfig();
 
@@ -45,12 +50,21 @@ namespace AutomaticClayFormer
         {
             ServerInstance = this;
 
+            // Message types are numbered in the order they're registered: keep the client's order the same, and add new
+            // ones at the end so older versions still agree on the first ones.
             serverChannel = api.Network.RegisterChannel(ChannelName)
                 .RegisterMessageType<ToolModeRequest>()
                 .RegisterMessageType<FormerStatus>()
+                .RegisterMessageType<SettingsCommand>()
                 .SetMessageHandler<ToolModeRequest>(OnToolModeRequest);
 
-            api.Event.PlayerDisconnect += player => playersWithMod.Remove(player.PlayerUID);
+            api.Event.PlayerDisconnect += player =>
+            {
+                playersWithMod.Remove(player.PlayerUID);
+                playersWithCommands.Remove(player.PlayerUID);
+            };
+
+            RegisterServerCommands(api);
 
             harmony = new Harmony(HarmonyId);
             harmony.PatchAll(typeof(ClayFormerModSystem).Assembly);
@@ -60,6 +74,12 @@ namespace AutomaticClayFormer
         {
             if (fromPlayer == null || request == null) return;
             playersWithMod.Add(fromPlayer.PlayerUID);
+
+            if (request.Mode == ToolModeRequest.Hello)
+            {
+                playersWithCommands.Add(fromPlayer.PlayerUID);
+                return;
+            }
 
             if (request.Mode < FormingPlanner.ToolOne || request.Mode > FormingPlanner.ToolCopyLayer) return;
 
@@ -87,13 +107,27 @@ namespace AutomaticClayFormer
             clientChannel = api.Network.RegisterChannel(ChannelName)
                 .RegisterMessageType<ToolModeRequest>()
                 .RegisterMessageType<FormerStatus>()
-                .SetMessageHandler<FormerStatus>(status => former?.OnServerStatus(status));
+                .RegisterMessageType<SettingsCommand>()
+                .SetMessageHandler<FormerStatus>(status => former?.OnServerStatus(status))
+                .SetMessageHandler<SettingsCommand>(OnSettingsCommand);
 
             former = new ClientFormer(api, this, clientChannel);
             tickListenerId = api.World.RegisterGameTickListener(former.OnGameTick, TickIntervalMs);
+            helloListenerId = api.World.RegisterGameTickListener(dt => TrySendHello(), 1000);
             api.Event.LeftWorld += OnLeftWorld;
+        }
 
-            RegisterCommands(api);
+        /// <summary>
+        /// Tells the server once that this game has the mod, so /clayformer works. The channel connects only when
+        /// the server has the mod too; until then (or on a server without it) this just waits.
+        /// </summary>
+        void TrySendHello()
+        {
+            if (helloSent || capi == null || clientChannel == null || !clientChannel.Connected) return;
+            clientChannel.SendPacket(new ToolModeRequest { Mode = ToolModeRequest.Hello });
+            helloSent = true;
+            if (helloListenerId != 0) capi.World.UnregisterGameTickListener(helloListenerId);
+            helloListenerId = 0;
         }
 
         void OnLeftWorld()
@@ -141,67 +175,122 @@ namespace AutomaticClayFormer
             TryStoreConfig(capi, Config);
         }
 
-        void RegisterCommands(ICoreClientAPI api)
+        // ---- /clayformer ----
+
+        /// <summary>
+        /// /clayformer runs on the server (a "/" command), but the settings are each player's own, kept in their
+        /// game's ModConfig. So the server checks the command and hands it to the player's game
+        /// (<see cref="OnSettingsCommand"/>), which applies it and shows the result.
+        /// </summary>
+        void RegisterServerCommands(ICoreServerAPI api)
         {
             CommandArgumentParsers parsers = api.ChatCommands.Parsers;
 
             api.ChatCommands.Create("clayformer")
-                .WithDescription("Automatic Clay Former: show settings, or change them with a subcommand")
+                .WithDescription("Automatic Clay Former: show your settings, or change them with a subcommand")
                 .RequiresPrivilege(Privilege.chat)
-                .HandleWith(args => TextCommandResult.Success(DescribeSettings()))
+                .RequiresPlayer()
+                .HandleWith(args => Relay(args, new SettingsCommand { Action = SettingsCommand.Show }))
 
                 .BeginSubCommand("on")
                     .WithDescription("Turn automatic clay forming on")
-                    .HandleWith(args =>
-                    {
-                        Config.Enabled = true;
-                        SaveConfig();
-                        return TextCommandResult.Success(Lang.Get("automaticclayformer:cmd-on"));
-                    })
+                    .HandleWith(args => Relay(args, new SettingsCommand { Action = SettingsCommand.On }))
                 .EndSubCommand()
 
                 .BeginSubCommand("off")
                     .WithDescription("Turn automatic clay forming off")
-                    .HandleWith(args =>
-                    {
-                        Config.Enabled = false;
-                        SaveConfig();
-                        return TextCommandResult.Success(Lang.Get("automaticclayformer:cmd-off"));
-                    })
+                    .HandleWith(args => Relay(args, new SettingsCommand { Action = SettingsCommand.Off }))
                 .EndSubCommand()
 
                 .BeginSubCommand("range")
                     .WithDescription("How far away clay forms get worked, in blocks (" + Format(ClayFormerConfig.MinRange) + " to " + Format(ClayFormerConfig.MaxRange) + ", capped at your reach)")
                     .WithArgs(parsers.Float("blocks"))
-                    .HandleWith(args =>
-                    {
-                        Config.Range = (float)args[0];
-                        SaveConfig();
-                        return TextCommandResult.Success(Lang.Get("automaticclayformer:cmd-range", Format(Config.Range), Format(Reach())));
-                    })
+                    .HandleWith(args => Relay(args, new SettingsCommand { Action = SettingsCommand.Range, Value = (float)args[0] }))
                 .EndSubCommand()
 
                 .BeginSubCommand("speed")
                     .WithDescription("Forming clicks per second (" + Format(ClayFormerConfig.MinActionsPerSecond) + " to " + Format(ClayFormerConfig.MaxActionsPerSecond) + ")")
                     .WithArgs(parsers.Float("clicksPerSecond"))
-                    .HandleWith(args =>
-                    {
-                        Config.ActionsPerSecond = (float)args[0];
-                        SaveConfig();
-                        return TextCommandResult.Success(Lang.Get("automaticclayformer:cmd-speed", Format(Config.ActionsPerSecond)));
-                    })
+                    .HandleWith(args => Relay(args, new SettingsCommand { Action = SettingsCommand.Speed, Value = (float)args[0] }))
                 .EndSubCommand()
 
                 .BeginSubCommand("messages")
                     .WithDescription("Show chat messages when forming starts and finishes (on or off)")
                     .WithArgs(parsers.Bool("show", "on"))
-                    .HandleWith(args =>
-                    {
-                        Config.ChatMessages = (bool)args[0];
-                        SaveConfig();
-                        return TextCommandResult.Success(Lang.Get(Config.ChatMessages ? "automaticclayformer:cmd-messages-on" : "automaticclayformer:cmd-messages-off"));
-                    })
+                    .HandleWith(args => Relay(args, new SettingsCommand { Action = SettingsCommand.Messages, Flag = (bool)args[0] }))
+                .EndSubCommand()
+
+                .BeginSubCommand("help")
+                    .WithDescription("How to use Automatic Clay Former, and its commands")
+                    .HandleWith(Help)
                 .EndSubCommand();
+        }
+
+        /// <summary>/clayformer help: answered by the server itself, so it works even before the player's game has the mod.</summary>
+        TextCommandResult Help(TextCommandCallingArgs args)
+        {
+            string text = Lang.Get("automaticclayformer:cmd-help");
+            if (args.Caller.Player is IServerPlayer player && !playersWithCommands.Contains(player.PlayerUID))
+            {
+                text += "\n" + Lang.Get("automaticclayformer:cmd-notinstalled");
+            }
+
+            return TextCommandResult.Success(text);
+        }
+
+        TextCommandResult Relay(TextCommandCallingArgs args, SettingsCommand command)
+        {
+            if (!(args.Caller.Player is IServerPlayer player)) return TextCommandResult.Error(Lang.Get("automaticclayformer:cmd-playeronly"));
+            if (!playersWithCommands.Contains(player.PlayerUID)) return TextCommandResult.Error(Lang.Get("automaticclayformer:cmd-notinstalled"));
+
+            serverChannel.SendPacket(command, player);
+            return TextCommandResult.Success(); // the player's game shows the result
+        }
+
+        /// <summary>The player's game: apply a /clayformer command the server passed on, and say what changed.</summary>
+        void OnSettingsCommand(SettingsCommand command)
+        {
+            if (command == null || capi == null) return;
+
+            string message;
+            switch (command.Action)
+            {
+                case SettingsCommand.On:
+                    Config.Enabled = true;
+                    SaveConfig();
+                    message = Lang.Get("automaticclayformer:cmd-on");
+                    break;
+
+                case SettingsCommand.Off:
+                    Config.Enabled = false;
+                    SaveConfig();
+                    message = Lang.Get("automaticclayformer:cmd-off");
+                    break;
+
+                case SettingsCommand.Range:
+                    Config.Range = command.Value;
+                    SaveConfig();
+                    message = Lang.Get("automaticclayformer:cmd-range", Format(Config.Range), Format(Reach()));
+                    break;
+
+                case SettingsCommand.Speed:
+                    Config.ActionsPerSecond = command.Value;
+                    SaveConfig();
+                    message = Lang.Get("automaticclayformer:cmd-speed", Format(Config.ActionsPerSecond));
+                    break;
+
+                case SettingsCommand.Messages:
+                    Config.ChatMessages = command.Flag;
+                    SaveConfig();
+                    message = Lang.Get(Config.ChatMessages ? "automaticclayformer:cmd-messages-on" : "automaticclayformer:cmd-messages-off");
+                    break;
+
+                default:
+                    message = DescribeSettings();
+                    break;
+            }
+
+            capi.ShowChatMessage(Lang.Get("automaticclayformer:prefix") + " " + message);
         }
 
         string DescribeSettings()
@@ -239,7 +328,17 @@ namespace AutomaticClayFormer
                     // The world may already be torn down when leaving; nothing left to clean up then.
                 }
 
+                try
+                {
+                    if (helloListenerId != 0) capi.World?.UnregisterGameTickListener(helloListenerId);
+                }
+                catch (Exception)
+                {
+                    // as above
+                }
+
                 tickListenerId = 0;
+                helloListenerId = 0;
                 capi.Event.LeftWorld -= OnLeftWorld;
                 former = null;
                 capi = null;
@@ -252,6 +351,7 @@ namespace AutomaticClayFormer
             }
 
             playersWithMod.Clear();
+            playersWithCommands.Clear();
             if (ServerInstance == this) ServerInstance = null;
 
             base.Dispose();

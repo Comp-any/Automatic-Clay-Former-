@@ -3,7 +3,7 @@ using System;
 namespace AutomaticClayFormer
 {
     /// <summary>
-    /// Client settings, saved to ModConfig/AutomaticClayFormer.json. Can also be changed in game with .clayformer
+    /// Client settings, saved to ModConfig/AutomaticClayFormer.json. Can also be changed in game with /clayformer
     /// </summary>
     public class ClayFormerConfig
     {

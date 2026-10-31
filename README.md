@@ -19,14 +19,17 @@ Put the mod zip in your `Mods` folder.
 
 ## Settings
 
-Type `.clayformer` in chat to see the current settings.
+Type `/clayformer` in chat to see your current settings, and `/clayformer help` for the commands.
 
 | Command | What it does |
 | --- | --- |
-| `.clayformer on` / `.clayformer off` | Turn automatic forming on or off |
-| `.clayformer range <blocks>` | How far away forms get shaped, 1 to 16. The game only accepts clay forming within your reach (4.5 blocks in survival), so higher values only help if your reach is longer. |
-| `.clayformer speed <clicks per second>` | How fast it works, 1 to 100. Default 20. Lower it if you see voxels flicker on a laggy server. |
-| `.clayformer messages on` / `off` | Chat messages when forming starts and finishes. Problems like running out of clay are always shown. |
+| `/clayformer on` / `/clayformer off` | Turn automatic forming on or off |
+| `/clayformer range <blocks>` | How far away forms get shaped, 1 to 16. The game only accepts clay forming within your reach (4.5 blocks in survival), so higher values only help if your reach is longer. |
+| `/clayformer speed <clicks per second>` | How fast it works, 1 to 100. Default 20. Lower it if you see voxels flicker on a laggy server. |
+| `/clayformer messages on` / `off` | Chat messages when forming starts and finishes. Problems like running out of clay are always shown. |
+| `/clayformer help` | How to use the mod, and these commands |
+
+Each player's settings are their own: the server passes `/clayformer` on to your game, which keeps the settings. That needs 2.1.0 or newer on both. (Before 2.1.0 the commands started with a dot: `.clayformer`.)
 
 Settings are saved to `ModConfig/AutomaticClayFormer.json`, which you can also edit while the game is closed:
 
