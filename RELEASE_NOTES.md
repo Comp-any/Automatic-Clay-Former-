@@ -1,8 +1,10 @@
 **Automatic Clay Former 2.1.0** for Vintage Story 1.22. Place clay, pick a recipe, hold clay of the same type, and the form shapes itself.
 
 **What's new:**
-- **Commands start with `/` now:** `/clayformer` instead of `.clayformer`. The subcommands are the same: `on`/`off`, `range <blocks>`, `speed <clicks per second>` and `messages on`/`off`.
+- **Commands start with `/` now:** `/clayformer` instead of `.clayformer`. The subcommands are the same: `on`/`off`, `range <blocks>` and `speed <clicks per second>`.
+- **`/clayformer messages`** on its own switches the chat messages on or off; `/clayformer messages on` and `off` still work.
 - **`/clayformer help`** says how to use the mod and lists the commands.
+- The mod's home is now [Comp-any/Automatic-Clay-Former-](https://github.com/Comp-any/Automatic-Clay-Former-) on GitHub.
 - Each player's settings are still their own, kept in their game's `ModConfig/AutomaticClayFormer.json`: the server passes the command on to your game. That needs 2.1.0 on both the server and your game.
 
 **Install:** put the zip in your `Mods` folder. In multiplayer the server needs it too, because the server is what takes clay from your inventory. On a server without it, automatic forming stays off rather than forming for free.

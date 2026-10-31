@@ -97,9 +97,11 @@ jobs:
           path: release/*.zip
           if-no-files-found: error
 
-      # Runs for a pushed v* tag, or for "Run workflow" with Publish ticked (which makes the tag from modinfo.json).
+      # Runs for a pushed v* tag, for "Run workflow" with Publish ticked (which makes the tag from modinfo.json), and
+      # for a push to main: that publishes a new version (one with no release yet) once it has built and passed the
+      # tests, and leaves an existing release alone.
       - name: Publish release
-        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.release)
+        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.release) || (github.event_name == 'push' && github.ref == 'refs/heads/main')
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -111,6 +113,10 @@ jobs:
             echo "::error::Tag $GITHUB_REF_NAME doesn't match the version in modinfo.json ($VERSION)"; exit 1
           fi
           if gh release view "$TAG" > /dev/null 2>&1; then
+            if [ "$GITHUB_EVENT_NAME" = "push" ] && [ "$GITHUB_REF_TYPE" = "branch" ]; then
+              echo "::notice title=Not published::$TAG is already released. Raise the version in modinfo.json to publish a new one."
+              exit 0
+            fi
             gh release upload "$TAG" release/*.zip --clobber
           else
             gh release create "$TAG" release/*.zip --target "$GITHUB_SHA" \

@@ -50,6 +50,8 @@ namespace AutomaticClayFormer
         public const int Range = 3;
         public const int Speed = 4;
         public const int Messages = 5;
+        /// <summary>/clayformer messages with nothing after it: switch chat messages to the other way.</summary>
+        public const int MessagesToggle = 6;
 
         public int Action;
         public float Value;

@@ -26,7 +26,7 @@ Type `/clayformer` in chat to see your current settings, and `/clayformer help` 
 | `/clayformer on` / `/clayformer off` | Turn automatic forming on or off |
 | `/clayformer range <blocks>` | How far away forms get shaped, 1 to 16. The game only accepts clay forming within your reach (4.5 blocks in survival), so higher values only help if your reach is longer. |
 | `/clayformer speed <clicks per second>` | How fast it works, 1 to 100. Default 20. Lower it if you see voxels flicker on a laggy server. |
-| `/clayformer messages on` / `off` | Chat messages when forming starts and finishes. Problems like running out of clay are always shown. |
+| `/clayformer messages` | Switches chat messages when forming starts and finishes on or off. Add `on` or `off` to choose. Problems like running out of clay are always shown. |
 | `/clayformer help` | How to use the mod, and these commands |
 
 Each player's settings are their own: the server passes `/clayformer` on to your game, which keeps the settings. That needs 2.1.0 or newer on both. (Before 2.1.0 the commands started with a dot: `.clayformer`.)
@@ -64,7 +64,7 @@ dotnet build AutomaticClayFormer.csproj -c Release -p:VintageStoryDir="/path/to/
 
 A Release build writes the mod zip to `release/`. You can also set the `VINTAGE_STORY` environment variable instead of passing `VintageStoryDir`.
 
-GitHub Actions builds every push against the official Vintage Story server files, runs the tests, and uploads the zip as a build artifact. To publish a release, run **Actions → Build → Run workflow** with **Publish** ticked: it tags `v` + the version in `modinfo.json` and puts the zip on the release, with `RELEASE_NOTES.md` as its notes. Pushing a tag like `v2.0.0` does the same.
+GitHub Actions builds every push against the official Vintage Story server files, runs the tests, and uploads the zip as a build artifact. A push to `main` with a new version in `modinfo.json` (one with no release yet) also publishes it once it has built and passed the tests: it tags `v` + the version and puts the zip on the release, with `RELEASE_NOTES.md` as its notes. **Actions → Build → Run workflow** with **Publish** ticked, or pushing a tag like `v2.1.0`, does the same (and replaces the zip of an existing release).
 
 ### Tests
 

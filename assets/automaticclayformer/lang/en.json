@@ -9,7 +9,7 @@
 	"on": "on",
 	"off": "off",
 	"cmd-status": "Automatic forming: {0}. Range: {1} blocks (your reach is {2}). Speed: {3} clicks per second. Chat messages: {4}. Type /clayformer help for the commands.",
-	"cmd-help": "Automatic Clay Former: place clay, pick a recipe, and hold clay of the same type near the form. It shapes itself, using clay like forming by hand.\n/clayformer: show your settings\n/clayformer on or /clayformer off: turn automatic forming on or off\n/clayformer range 1-16: how far away forms get shaped, in blocks (only up to your reach)\n/clayformer speed 1-100: how fast it works, in clicks per second (default 20)\n/clayformer messages on or off: chat messages when forming starts and finishes\n/clayformer help: this list",
+	"cmd-help": "Automatic Clay Former: place clay, pick a recipe, and hold clay of the same type near the form. It shapes itself, using clay like forming by hand.\n/clayformer: show your settings\n/clayformer on or /clayformer off: turn automatic forming on or off\n/clayformer range 1-16: how far away forms get shaped, in blocks (only up to your reach)\n/clayformer speed 1-100: how fast it works, in clicks per second (default 20)\n/clayformer messages: switch chat messages when forming starts and finishes on or off (or add on or off)\n/clayformer help: this list",
 	"cmd-notinstalled": "Your game doesn't have Automatic Clay Former 2.1.0 or newer, so there are no settings to change. Each player's settings are kept in their own game, so install it there (the server has it).",
 	"cmd-playeronly": "Only players can use this: the settings are kept in each player's own game.",
 

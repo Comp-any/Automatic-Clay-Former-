@@ -215,9 +215,11 @@ namespace AutomaticClayFormer
                 .EndSubCommand()
 
                 .BeginSubCommand("messages")
-                    .WithDescription("Show chat messages when forming starts and finishes (on or off)")
-                    .WithArgs(parsers.Bool("show", "on"))
-                    .HandleWith(args => Relay(args, new SettingsCommand { Action = SettingsCommand.Messages, Flag = (bool)args[0] }))
+                    .WithDescription("Switch chat messages when forming starts and finishes on or off (or add on or off)")
+                    .WithArgs(parsers.OptionalBool("show", "on"))
+                    .HandleWith(args => Relay(args, args.Parsers[0].IsMissing
+                        ? new SettingsCommand { Action = SettingsCommand.MessagesToggle }
+                        : new SettingsCommand { Action = SettingsCommand.Messages, Flag = (bool)args[0] }))
                 .EndSubCommand()
 
                 .BeginSubCommand("help")
@@ -280,7 +282,8 @@ namespace AutomaticClayFormer
                     break;
 
                 case SettingsCommand.Messages:
-                    Config.ChatMessages = command.Flag;
+                case SettingsCommand.MessagesToggle:
+                    Config.ChatMessages = command.Action == SettingsCommand.MessagesToggle ? !Config.ChatMessages : command.Flag;
                     SaveConfig();
                     message = Lang.Get(Config.ChatMessages ? "automaticclayformer:cmd-messages-on" : "automaticclayformer:cmd-messages-off");
                     break;

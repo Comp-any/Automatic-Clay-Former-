@@ -1,5 +1,16 @@
 # Notes for Claude
 
+## Where this repository lives
+
+Since 2026-10-31 it's **github.com/Comp-any/Automatic-Clay-Former-** (moved from demonic69/Automatic-Clay-Former-;
+git still forwards the old address). Use the new name in `gh api repos/...` calls: the old one answers with a redirect
+to `repositories/<id>`, which the session's proxy refuses ("Numeric-ID repository paths ... are not supported").
+
+A session that has the old demonic69 copy attached can't attach the Comp-any one (add_repo: "a different
+repository named ... is already attached"), so it has no API access to it: pushing still works through the old
+address, and the public pages (`https://github.com/Comp-any/Automatic-Clay-Former-/actions`, `/releases`) can be
+read with WebFetch. Start a new session with Comp-any/Automatic-Clay-Former- as its source for full access.
+
 ## Don't assume something is blocked: try it
 
 Before telling the user you can't do something (publish, trigger a workflow, push, read results), try it.
@@ -25,9 +36,13 @@ What was tested from a Claude session on 2026-10-20 (this can change, so still t
 GitHub Actions (`.github/workflows/build.yml`) builds every push against the official Vintage Story server
 files and runs `tests/PlannerTests`. Since job logs can't be read from a session, a failing build or test step
 puts the end of its output into an annotation (read it with the check-runs annotations call above), and the
-test results are notices on the run. To publish a release, run the workflow with `release=true`:
-`gh workflow run build.yml -R demonic69/Automatic-Clay-Former- --ref main -f release=true`. It makes the tag
-(`v` + the version in `modinfo.json`) and the release itself, with `RELEASE_NOTES.md` as its notes.
+test results are notices on the run.
+
+**Publishing:** a push to `main` whose `modinfo.json` version has no release yet publishes it by itself once it has
+built and passed the tests (tag `v` + the version, the zip, `RELEASE_NOTES.md` as the notes). So publishing a new
+version is: raise the version, update `RELEASE_NOTES.md`, push to `main`. Running the workflow with `release=true`
+(`gh workflow run build.yml -R Comp-any/Automatic-Clay-Former- --ref main -f release=true`) also publishes, and
+replaces the zip of an existing release.
 
 **Always publish each new version** once its build and tests pass, without asking first (the user's
 instruction, 2026-10-20). The one exception: if you asked the user a question about that work and they haven't
