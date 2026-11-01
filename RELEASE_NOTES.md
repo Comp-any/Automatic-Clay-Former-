@@ -1,4 +1,14 @@
-**Automatic Clay Former 2.1.0** for Vintage Story 1.22. Place clay, pick a recipe, hold clay of the same type, and the form shapes itself.
+**Automatic Clay Former 2.2.0** for Vintage Story 1.22. Place clay, pick a recipe, hold clay of the same type, and the form shapes itself.
+
+**What's new:**
+- **Optional: work on servers that don't have the mod.** Turn on `WorkOnUnmoddedServers` in `ModConfig/AutomaticClayFormer.json`, or `/clayformer unmodded` in single player. It's **off by default**: on a server without the mod nothing takes clay for automatic forming, so it's free there, and the server may count that as cheating. The first time it works on such a server you get a warning in chat.
+- On those servers the mod can't change your clay tool, so it uses the one you selected. With the single-voxel tool it can finish any shape; with another tool it does what it can and then asks you to switch.
+
+**Install:** put the zip in your `Mods` folder. In multiplayer the server should have it too, so automatic forming takes clay like forming by hand. The `/clayformer` commands need 2.1.0 or newer on both the server and your game; `/clayformer unmodded` needs 2.2.0 in your game.
+
+---
+
+**2.1.0:**
 
 **What's new:**
 - **Commands start with `/` now:** `/clayformer` instead of `.clayformer`. The subcommands are the same: `on`/`off`, `range <blocks>` and `speed <clicks per second>`.

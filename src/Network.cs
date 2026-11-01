@@ -16,6 +16,12 @@ namespace AutomaticClayFormer
         /// </summary>
         public const int Hello = -21;
 
+        /// <summary>
+        /// Sent as well by 2.2.0 and newer: this game also knows /clayformer unmodded. Sent separately so a 2.1.0
+        /// server still gets its <see cref="Hello"/> (and ignores this one as an invalid tool mode).
+        /// </summary>
+        public const int Hello2 = -22;
+
         public int X;
         public int Y;
         public int Z;
@@ -52,6 +58,10 @@ namespace AutomaticClayFormer
         public const int Messages = 5;
         /// <summary>/clayformer messages with nothing after it: switch chat messages to the other way.</summary>
         public const int MessagesToggle = 6;
+        /// <summary>/clayformer unmodded on|off (2.2.0): also work on servers without the mod.</summary>
+        public const int Unmodded = 7;
+        /// <summary>/clayformer unmodded with nothing after it.</summary>
+        public const int UnmoddedToggle = 8;
 
         public int Action;
         public float Value;

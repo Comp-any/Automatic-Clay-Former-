@@ -28,6 +28,7 @@ namespace AutomaticClayFormer.Tests
             public int ClayUsed;
             public int ClayEstimate;
             public string Error;
+            public bool[,,] Recipe;
         }
 
         public static int Main(string[] args)
@@ -103,6 +104,13 @@ namespace AutomaticClayFormer.Tests
 
             int vanillaCount = results.Count;
 
+            // On a server without the mod only the selected tool is used: with the 1x1 tool every recipe must still finish
+            List<Result> singleTool = new List<Result>();
+            foreach (Result r in results.ToList())
+            {
+                if (r.Recipe != null) singleTool.Add(Run("1x1 only: " + r.Name, r.Recipe, FormingPlanner.ToolOne));
+            }
+
             Random random = new Random(20261020);
             for (int i = 0; i < 500; i++)
             {
@@ -118,7 +126,20 @@ namespace AutomaticClayFormer.Tests
 
             foreach (string s in skipped) Console.WriteLine("Skipped " + s);
 
-            List<Result> failed = results.Where(r => r.Error != null).ToList();
+            foreach (Result r in singleTool)
+            {
+                Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0,-60} clicks {1,4}  tool switches {2,3}  {3}",
+                    r.Name, r.Actions, r.ToolSwitches, r.Error ?? "ok"));
+            }
+
+            List<Result> singleToolOk = singleTool.Where(r => r.Error == null).ToList();
+            Console.WriteLine(string.Format(CultureInfo.InvariantCulture,
+                "::notice title=1x1 tool only::{0} of {1} vanilla recipes finished with only the 1x1 tool (servers without the mod). Clicks: avg {2:0.0}, max {3}.",
+                singleToolOk.Count, singleTool.Count,
+                singleToolOk.Count > 0 ? singleToolOk.Average(r => r.Actions) : 0,
+                singleToolOk.Count > 0 ? singleToolOk.Max(r => r.Actions) : 0));
+
+            List<Result> failed = results.Concat(singleTool).Where(r => r.Error != null).ToList();
             foreach (Result r in failed.Take(10))
             {
                 Console.WriteLine("::error title=Planner failed::" + r.Name + ": " + r.Error);
@@ -152,9 +173,9 @@ namespace AutomaticClayFormer.Tests
             return failed.Count == 0 ? 0 : 1;
         }
 
-        static Result Run(string name, bool[,,] recipe)
+        static Result Run(string name, bool[,,] recipe, int onlyToolMode = -1)
         {
-            Result result = new Result { Name = name };
+            Result result = new Result { Name = name, Recipe = recipe };
             int voxelCount = 0;
             foreach (bool v in recipe)
             {
@@ -170,7 +191,13 @@ namespace AutomaticClayFormer.Tests
 
             while (true)
             {
-                if (!FormingPlanner.TryPlan(form.Voxels, recipe, form.ToolMode, out FormingAction action)) break;
+                if (!FormingPlanner.TryPlan(form.Voxels, recipe, form.ToolMode, out FormingAction action, onlyToolMode)) break;
+
+                if (onlyToolMode >= 0 && action.ToolMode != onlyToolMode)
+                {
+                    result.Error = "click " + (result.Actions + 1) + " (" + action + ") used another tool than the only one allowed";
+                    break;
+                }
 
                 if (action.ToolMode != form.ToolMode)
                 {

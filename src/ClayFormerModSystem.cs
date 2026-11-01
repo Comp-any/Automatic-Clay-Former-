@@ -32,8 +32,11 @@ namespace AutomaticClayFormer
         /// <summary>Players whose game has this mod. Only they get status messages.</summary>
         readonly HashSet<string> playersWithMod = new HashSet<string>();
 
-        /// <summary>Players whose game has 2.1.0 or newer (it said hello), so it takes /clayformer settings.</summary>
-        readonly HashSet<string> playersWithCommands = new HashSet<string>();
+        /// <summary>
+        /// Players whose game takes /clayformer settings, and which ones: 1 = 2.1.0 (said <see cref="ToolModeRequest.Hello"/>),
+        /// 2 = 2.2.0 or newer (also said <see cref="ToolModeRequest.Hello2"/>: knows /clayformer unmodded).
+        /// </summary>
+        readonly Dictionary<string, int> playersWithCommands = new Dictionary<string, int>();
 
         // ---- Client side ----
 
@@ -75,9 +78,11 @@ namespace AutomaticClayFormer
             if (fromPlayer == null || request == null) return;
             playersWithMod.Add(fromPlayer.PlayerUID);
 
-            if (request.Mode == ToolModeRequest.Hello)
+            if (request.Mode == ToolModeRequest.Hello || request.Mode == ToolModeRequest.Hello2)
             {
-                playersWithCommands.Add(fromPlayer.PlayerUID);
+                int level = request.Mode == ToolModeRequest.Hello2 ? 2 : 1;
+                playersWithCommands.TryGetValue(fromPlayer.PlayerUID, out int known);
+                playersWithCommands[fromPlayer.PlayerUID] = Math.Max(known, level);
                 return;
             }
 
@@ -125,6 +130,7 @@ namespace AutomaticClayFormer
         {
             if (helloSent || capi == null || clientChannel == null || !clientChannel.Connected) return;
             clientChannel.SendPacket(new ToolModeRequest { Mode = ToolModeRequest.Hello });
+            clientChannel.SendPacket(new ToolModeRequest { Mode = ToolModeRequest.Hello2 });
             helloSent = true;
             if (helloListenerId != 0) capi.World.UnregisterGameTickListener(helloListenerId);
             helloListenerId = 0;
@@ -222,6 +228,14 @@ namespace AutomaticClayFormer
                         : new SettingsCommand { Action = SettingsCommand.Messages, Flag = (bool)args[0] }))
                 .EndSubCommand()
 
+                .BeginSubCommand("unmodded")
+                    .WithDescription("Also form automatically on servers without the mod (off by default: clay isn't taken there, so it may count as cheating)")
+                    .WithArgs(parsers.OptionalBool("allow", "on"))
+                    .HandleWith(args => Relay(args, args.Parsers[0].IsMissing
+                        ? new SettingsCommand { Action = SettingsCommand.UnmoddedToggle }
+                        : new SettingsCommand { Action = SettingsCommand.Unmodded, Flag = (bool)args[0] }))
+                .EndSubCommand()
+
                 .BeginSubCommand("help")
                     .WithDescription("How to use Automatic Clay Former, and its commands")
                     .HandleWith(Help)
@@ -232,7 +246,7 @@ namespace AutomaticClayFormer
         TextCommandResult Help(TextCommandCallingArgs args)
         {
             string text = Lang.Get("automaticclayformer:cmd-help");
-            if (args.Caller.Player is IServerPlayer player && !playersWithCommands.Contains(player.PlayerUID))
+            if (args.Caller.Player is IServerPlayer player && !playersWithCommands.ContainsKey(player.PlayerUID))
             {
                 text += "\n" + Lang.Get("automaticclayformer:cmd-notinstalled");
             }
@@ -243,7 +257,10 @@ namespace AutomaticClayFormer
         TextCommandResult Relay(TextCommandCallingArgs args, SettingsCommand command)
         {
             if (!(args.Caller.Player is IServerPlayer player)) return TextCommandResult.Error(Lang.Get("automaticclayformer:cmd-playeronly"));
-            if (!playersWithCommands.Contains(player.PlayerUID)) return TextCommandResult.Error(Lang.Get("automaticclayformer:cmd-notinstalled"));
+            if (!playersWithCommands.TryGetValue(player.PlayerUID, out int level)) return TextCommandResult.Error(Lang.Get("automaticclayformer:cmd-notinstalled"));
+
+            bool needs22 = command.Action == SettingsCommand.Unmodded || command.Action == SettingsCommand.UnmoddedToggle;
+            if (needs22 && level < 2) return TextCommandResult.Error(Lang.Get("automaticclayformer:cmd-needs22"));
 
             serverChannel.SendPacket(command, player);
             return TextCommandResult.Success(); // the player's game shows the result
@@ -281,6 +298,13 @@ namespace AutomaticClayFormer
                     message = Lang.Get("automaticclayformer:cmd-speed", Format(Config.ActionsPerSecond));
                     break;
 
+                case SettingsCommand.Unmodded:
+                case SettingsCommand.UnmoddedToggle:
+                    Config.WorkOnUnmoddedServers = command.Action == SettingsCommand.UnmoddedToggle ? !Config.WorkOnUnmoddedServers : command.Flag;
+                    SaveConfig();
+                    message = Lang.Get(Config.WorkOnUnmoddedServers ? "automaticclayformer:cmd-unmodded-on" : "automaticclayformer:cmd-unmodded-off");
+                    break;
+
                 case SettingsCommand.Messages:
                 case SettingsCommand.MessagesToggle:
                     Config.ChatMessages = command.Action == SettingsCommand.MessagesToggle ? !Config.ChatMessages : command.Flag;
@@ -303,7 +327,8 @@ namespace AutomaticClayFormer
                 Format(Config.Range),
                 Format(Reach()),
                 Format(Config.ActionsPerSecond),
-                Lang.Get(Config.ChatMessages ? "automaticclayformer:on" : "automaticclayformer:off"));
+                Lang.Get(Config.ChatMessages ? "automaticclayformer:on" : "automaticclayformer:off"),
+                Lang.Get(Config.WorkOnUnmoddedServers ? "automaticclayformer:on" : "automaticclayformer:off"));
         }
 
         float Reach()

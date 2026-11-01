@@ -102,7 +102,11 @@ namespace AutomaticClayFormer
         /// Picks the next click. Returns false when the form already matches the recipe.
         /// </summary>
         /// <param name="preferredToolMode">The tool mode currently selected. Used to break ties so the tool isn't switched needlessly.</param>
-        public static bool TryPlan(bool[,,] current, bool[,,] recipe, int preferredToolMode, out FormingAction action)
+        /// <param name="onlyToolMode">
+        /// Use only this tool mode (-1: any). On a server without the mod the tool can't be switched, so only the one
+        /// the player selected is used; with <see cref="ToolOne"/> every shape can still be finished.
+        /// </param>
+        public static bool TryPlan(bool[,,] current, bool[,,] recipe, int preferredToolMode, out FormingAction action, int onlyToolMode = -1)
         {
             action = default;
             if (!HasValidShape(current) || !HasValidShape(recipe)) return false;
@@ -116,16 +120,17 @@ namespace AutomaticClayFormer
             // voxels belong to the recipe, add something first.
             bool hasCorrectVoxel = HasCorrectVoxel(current, recipe);
 
-            if (hasCorrectVoxel && TryPlanArea(current, recipe, layer, true, preferredToolMode, out action)) return true;
-            if (TryPlanAdd(current, recipe, layer, preferredToolMode, out action)) return true;
-            return TryPlanArea(current, recipe, layer, true, preferredToolMode, out action);
+            if (hasCorrectVoxel && TryPlanArea(current, recipe, layer, true, preferredToolMode, onlyToolMode, out action)) return true;
+            if (TryPlanAdd(current, recipe, layer, preferredToolMode, onlyToolMode, out action)) return true;
+            return TryPlanArea(current, recipe, layer, true, preferredToolMode, onlyToolMode, out action);
         }
 
-        static bool TryPlanAdd(bool[,,] current, bool[,,] recipe, int layer, int preferredToolMode, out FormingAction action)
+        static bool TryPlanAdd(bool[,,] current, bool[,,] recipe, int layer, int preferredToolMode, int onlyToolMode, out FormingAction action)
         {
-            bool found = TryPlanArea(current, recipe, layer, false, preferredToolMode, out action);
+            bool found = TryPlanArea(current, recipe, layer, false, preferredToolMode, onlyToolMode, out action);
 
-            if (TryPlanCopyLayer(current, recipe, layer, out FormingAction copy) && (!found || IsBetter(copy, action, preferredToolMode)))
+            bool copyAllowed = onlyToolMode < 0 || onlyToolMode == ToolCopyLayer;
+            if (copyAllowed && TryPlanCopyLayer(current, recipe, layer, out FormingAction copy) && (!found || IsBetter(copy, action, preferredToolMode)))
             {
                 action = copy;
                 found = true;
@@ -185,7 +190,7 @@ namespace AutomaticClayFormer
         }
 
         /// <summary>Finds the best 1x1, 2x2 or 3x3 add (or remove) on the layer.</summary>
-        static bool TryPlanArea(bool[,,] current, bool[,,] recipe, int layer, bool remove, int preferredToolMode, out FormingAction action)
+        static bool TryPlanArea(bool[,,] current, bool[,,] recipe, int layer, bool remove, int preferredToolMode, int onlyToolMode, out FormingAction action)
         {
             action = default;
             bool found = false;
@@ -204,6 +209,7 @@ namespace AutomaticClayFormer
 
                     for (int mode = ToolOne; mode <= ToolThree; mode++)
                     {
+                        if (onlyToolMode >= 0 && mode != onlyToolMode) continue;
                         GetToolOffsets(mode, out int low, out int high);
 
                         // Every click position whose area covers this cell

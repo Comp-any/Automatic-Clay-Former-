@@ -29,6 +29,13 @@ namespace AutomaticClayFormer
         /// <summary>Show chat messages when forming starts and finishes. Problems are always shown.</summary>
         public bool ChatMessages = true;
 
+        /// <summary>
+        /// Also form automatically on servers that don't have the mod. Off by default: without the mod on the server
+        /// nothing takes clay for automatic forming, so it's free there and may count as cheating. A warning is shown
+        /// in chat the first time it works on such a server.
+        /// </summary>
+        public bool WorkOnUnmoddedServers = false;
+
         public void Clamp()
         {
             Range = Clamp(Range, MinRange, MaxRange, 4.5f);

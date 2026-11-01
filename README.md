@@ -16,6 +16,7 @@ Put the mod zip in your `Mods` folder.
 
 - **Single player:** that's all.
 - **Multiplayer:** the server needs the mod too, because the server is what takes clay from your inventory. If a server doesn't have it, automatic forming stays off there (you'll get a chat message) instead of forming for free. Players without the mod can still join a server that has it.
+- **Servers without the mod, if you choose:** turn on `WorkOnUnmoddedServers` (or `/clayformer unmodded` in single player) and automatic forming works there too. Nothing takes clay for it there, so it's free, and the server may count that as cheating: you get a warning in chat the first time it works on such a server. It can't change your clay tool there, so it uses the one you selected (pick the single-voxel tool to finish any shape). Off by default.
 
 ## Settings
 
@@ -27,6 +28,7 @@ Type `/clayformer` in chat to see your current settings, and `/clayformer help` 
 | `/clayformer range <blocks>` | How far away forms get shaped, 1 to 16. The game only accepts clay forming within your reach (4.5 blocks in survival), so higher values only help if your reach is longer. |
 | `/clayformer speed <clicks per second>` | How fast it works, 1 to 100. Default 20. Lower it if you see voxels flicker on a laggy server. |
 | `/clayformer messages` | Switches chat messages when forming starts and finishes on or off. Add `on` or `off` to choose. Problems like running out of clay are always shown. |
+| `/clayformer unmodded` | Switches whether automatic forming also works on servers without the mod (off by default; see Install). Add `on` or `off` to choose. |
 | `/clayformer help` | How to use the mod, and these commands |
 
 Each player's settings are their own: the server passes `/clayformer` on to your game, which keeps the settings. That needs 2.1.0 or newer on both. (Before 2.1.0 the commands started with a dot: `.clayformer`.)
@@ -38,7 +40,8 @@ Settings are saved to `ModConfig/AutomaticClayFormer.json`, which you can also e
   "Enabled": true,
   "Range": 4.5,
   "ActionsPerSecond": 20.0,
-  "ChatMessages": true
+  "ChatMessages": true,
+  "WorkOnUnmoddedServers": false
 }
 ```
 

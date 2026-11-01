@@ -15,6 +15,10 @@ namespace AutomaticClayFormer
     /// Each click goes through the vanilla BlockEntityClayForm.OnUseOver, exactly like clicking by hand: the client
     /// shows the change right away and sends the click to the server, which applies the same change (and charges clay,
     /// see ServerClayChargingPatch).
+    ///
+    /// On a server without the mod it stays off, unless WorkOnUnmoddedServers is on: then it works there too, for free
+    /// (nothing on the server takes clay), with a warning in chat. The tool can't be switched there (that goes through
+    /// the mod's channel), so only the tool the player selected is used.
     /// </summary>
     public class ClientFormer
     {
@@ -48,6 +52,7 @@ namespace AutomaticClayFormer
         long lastAnnouncedMs = long.MinValue / 2;
         long lastProblemMessageMs = long.MinValue / 2;
         bool warnedNoServerSupport;
+        bool warnedUnmodded;
         bool loggedError;
 
         public ClientFormer(ICoreClientAPI capi, ClayFormerModSystem mod, IClientNetworkChannel channel)
@@ -91,6 +96,7 @@ namespace AutomaticClayFormer
             pausedUntilMs = 0;
             lastAnnouncedPos = null;
             warnedNoServerSupport = false;
+            warnedUnmodded = false;
             loggedError = false;
         }
 
@@ -133,7 +139,7 @@ namespace AutomaticClayFormer
                 return;
             }
 
-            if (!channel.Connected)
+            if (!channel.Connected && !Config.WorkOnUnmoddedServers)
             {
                 // The server doesn't have this mod, so it can't charge clay for automatic clicks. Stay off.
                 budget = 0;
@@ -196,6 +202,13 @@ namespace AutomaticClayFormer
             toolModeSynced = false;
             bestMismatches = int.MaxValue;
             lastProgressMs = now;
+
+            // Working on a server without the mod: say once per visit that it's free here and may count as cheating
+            if (!channel.Connected && !warnedUnmodded)
+            {
+                Chat(Lang.Get("automaticclayformer:msg-unmodded-warning"), true);
+                warnedUnmodded = true;
+            }
 
             // Don't repeat the message when walking in and out of range of the same form
             if (lastAnnouncedPos == null || !lastAnnouncedPos.Equals(targetPos) || now - lastAnnouncedMs > StartedMessageRepeatMs)
@@ -299,9 +312,20 @@ namespace AutomaticClayFormer
             BlockSelection blockSel = new BlockSelection { Position = form.Pos };
             int currentMode = slot.Itemstack.Collectible.GetToolMode(slot, player, blockSel);
 
-            if (!FormingPlanner.TryPlan(form.Voxels, recipe, currentMode, out FormingAction action)) return false;
+            // Without the mod on the server the tool can't be switched, so plan with the selected one only
+            bool unmodded = !channel.Connected;
+            if (!FormingPlanner.TryPlan(form.Voxels, recipe, currentMode, out FormingAction action, unmodded ? currentMode : -1))
+            {
+                if (unmodded && mismatches > 0)
+                {
+                    ShowProblem(Lang.Get("automaticclayformer:msg-unmodded-tool"));
+                    lastProgressMs = now; // not stuck on the server: waiting for the player to pick another tool
+                }
 
-            if (action.ToolMode != currentMode || !toolModeSynced)
+                return false;
+            }
+
+            if (!unmodded && (action.ToolMode != currentMode || !toolModeSynced))
             {
                 slot.Itemstack.Collectible.SetToolMode(slot, player, blockSel, action.ToolMode);
                 channel.SendPacket(new ToolModeRequest
