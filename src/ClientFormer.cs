@@ -116,7 +116,8 @@ namespace AutomaticClayFormer
             long elapsed = lastTickMs < 0 ? 0 : Math.Max(0, now - lastTickMs);
             lastTickMs = now;
 
-            if (!Config.Enabled || now < pausedUntilMs)
+            // Off by the player's own setting, or because this server has automatic forming turned off
+            if (!Config.Enabled || !mod.ServerAllowed || now < pausedUntilMs)
             {
                 budget = 0;
                 return;

@@ -22,6 +22,9 @@ namespace AutomaticClayFormer
         /// </summary>
         public const int Hello2 = -22;
 
+        /// <summary>Sent as well by 2.3.0 and newer: this game follows the server's on/off switch (/clayformer server).</summary>
+        public const int Hello3 = -23;
+
         public int X;
         public int Y;
         public int Z;
@@ -62,6 +65,11 @@ namespace AutomaticClayFormer
         public const int Unmodded = 7;
         /// <summary>/clayformer unmodded with nothing after it.</summary>
         public const int UnmoddedToggle = 8;
+        /// <summary>
+        /// The server's switch (2.3.0): <see cref="Flag"/> false means automatic forming is turned off on this server.
+        /// Sent on joining and whenever an admin changes it.
+        /// </summary>
+        public const int ServerSwitch = 9;
 
         public int Action;
         public float Value;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using HarmonyLib;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
@@ -27,14 +28,17 @@ namespace AutomaticClayFormer
         internal static ClayFormerModSystem ServerInstance { get; private set; }
 
         Harmony harmony;
+        ICoreServerAPI sapi;
         IServerNetworkChannel serverChannel;
+        ClayFormerServerConfig serverConfig = new ClayFormerServerConfig();
 
         /// <summary>Players whose game has this mod. Only they get status messages.</summary>
         readonly HashSet<string> playersWithMod = new HashSet<string>();
 
         /// <summary>
         /// Players whose game takes /clayformer settings, and which ones: 1 = 2.1.0 (said <see cref="ToolModeRequest.Hello"/>),
-        /// 2 = 2.2.0 or newer (also said <see cref="ToolModeRequest.Hello2"/>: knows /clayformer unmodded).
+        /// 2 = 2.2.0 (also said <see cref="ToolModeRequest.Hello2"/>: knows /clayformer unmodded), 3 = 2.3.0 or newer
+        /// (also said <see cref="ToolModeRequest.Hello3"/>: follows the server's on/off switch).
         /// </summary>
         readonly Dictionary<string, int> playersWithCommands = new Dictionary<string, int>();
 
@@ -49,9 +53,14 @@ namespace AutomaticClayFormer
 
         public ClayFormerConfig Config { get; private set; } = new ClayFormerConfig();
 
+        /// <summary>False while the server has automatic forming turned off (/clayformer server off).</summary>
+        public bool ServerAllowed { get; private set; } = true;
+
         public override void StartServerSide(ICoreServerAPI api)
         {
             ServerInstance = this;
+            sapi = api;
+            serverConfig = LoadServerConfig(api);
 
             // Message types are numbered in the order they're registered: keep the client's order the same, and add new
             // ones at the end so older versions still agree on the first ones.
@@ -78,11 +87,14 @@ namespace AutomaticClayFormer
             if (fromPlayer == null || request == null) return;
             playersWithMod.Add(fromPlayer.PlayerUID);
 
-            if (request.Mode == ToolModeRequest.Hello || request.Mode == ToolModeRequest.Hello2)
+            if (request.Mode == ToolModeRequest.Hello || request.Mode == ToolModeRequest.Hello2 || request.Mode == ToolModeRequest.Hello3)
             {
-                int level = request.Mode == ToolModeRequest.Hello2 ? 2 : 1;
+                int level = request.Mode == ToolModeRequest.Hello3 ? 3 : request.Mode == ToolModeRequest.Hello2 ? 2 : 1;
                 playersWithCommands.TryGetValue(fromPlayer.PlayerUID, out int known);
                 playersWithCommands[fromPlayer.PlayerUID] = Math.Max(known, level);
+
+                // Tell a game that follows the switch where it stands on this server
+                if (level == 3) serverChannel.SendPacket(ServerSwitchMessage(), fromPlayer);
                 return;
             }
 
@@ -131,6 +143,7 @@ namespace AutomaticClayFormer
             if (helloSent || capi == null || clientChannel == null || !clientChannel.Connected) return;
             clientChannel.SendPacket(new ToolModeRequest { Mode = ToolModeRequest.Hello });
             clientChannel.SendPacket(new ToolModeRequest { Mode = ToolModeRequest.Hello2 });
+            clientChannel.SendPacket(new ToolModeRequest { Mode = ToolModeRequest.Hello3 });
             helloSent = true;
             if (helloListenerId != 0) capi.World.UnregisterGameTickListener(helloListenerId);
             helloListenerId = 0;
@@ -161,6 +174,35 @@ namespace AutomaticClayFormer
             // Writes the file the first time, and adds any settings that are new since it was written
             TryStoreConfig(api, config);
             return config;
+        }
+
+        static ClayFormerServerConfig LoadServerConfig(ICoreAPI api)
+        {
+            ClayFormerServerConfig config;
+            try
+            {
+                config = api.LoadModConfig<ClayFormerServerConfig>(ClayFormerServerConfig.FileName) ?? new ClayFormerServerConfig();
+            }
+            catch (Exception e)
+            {
+                api.Logger.Error("[Automatic Clay Former] Could not read ModConfig/" + ClayFormerServerConfig.FileName + ", using default settings: " + e.Message);
+                return new ClayFormerServerConfig();
+            }
+
+            StoreServerConfig(api, config);
+            return config;
+        }
+
+        static void StoreServerConfig(ICoreAPI api, ClayFormerServerConfig config)
+        {
+            try
+            {
+                api.StoreModConfig(config, ClayFormerServerConfig.FileName);
+            }
+            catch (Exception e)
+            {
+                api.Logger.Error("[Automatic Clay Former] Could not save ModConfig/" + ClayFormerServerConfig.FileName + ": " + e.Message);
+            }
         }
 
         static void TryStoreConfig(ICoreAPI api, ClayFormerConfig config)
@@ -195,7 +237,6 @@ namespace AutomaticClayFormer
             api.ChatCommands.Create("clayformer")
                 .WithDescription("Automatic Clay Former: show your settings, or change them with a subcommand")
                 .RequiresPrivilege(Privilege.chat)
-                .RequiresPlayer()
                 .HandleWith(args => Relay(args, new SettingsCommand { Action = SettingsCommand.Show }))
 
                 .BeginSubCommand("on")
@@ -236,6 +277,13 @@ namespace AutomaticClayFormer
                         : new SettingsCommand { Action = SettingsCommand.Unmodded, Flag = (bool)args[0] }))
                 .EndSubCommand()
 
+                .BeginSubCommand("server")
+                    .WithDescription("Server admins: allow or stop automatic clay forming for everyone on this server (on or off)")
+                    .RequiresPrivilege(Privilege.controlserver)
+                    .WithArgs(parsers.OptionalBool("allow", "on"))
+                    .HandleWith(SetServerSwitch)
+                .EndSubCommand()
+
                 .BeginSubCommand("help")
                     .WithDescription("How to use Automatic Clay Former, and its commands")
                     .HandleWith(Help)
@@ -252,6 +300,25 @@ namespace AutomaticClayFormer
             }
 
             return TextCommandResult.Success(text);
+        }
+
+        /// <summary>/clayformer server [on|off]: the server-wide switch. Every game that follows it (2.3.0 or newer) is told at once.</summary>
+        TextCommandResult SetServerSwitch(TextCommandCallingArgs args)
+        {
+            serverConfig.AllowAutomaticForming = args.Parsers[0].IsMissing ? !serverConfig.AllowAutomaticForming : (bool)args[0];
+            StoreServerConfig(sapi, serverConfig);
+
+            IServerPlayer[] following = sapi.World.AllOnlinePlayers.OfType<IServerPlayer>()
+                .Where(p => playersWithCommands.TryGetValue(p.PlayerUID, out int level) && level >= 3)
+                .ToArray();
+            if (following.Length > 0) serverChannel.SendPacket(ServerSwitchMessage(), following);
+
+            return TextCommandResult.Success(Lang.Get(serverConfig.AllowAutomaticForming ? "automaticclayformer:cmd-server-on" : "automaticclayformer:cmd-server-off"));
+        }
+
+        SettingsCommand ServerSwitchMessage()
+        {
+            return new SettingsCommand { Action = SettingsCommand.ServerSwitch, Flag = serverConfig.AllowAutomaticForming };
         }
 
         TextCommandResult Relay(TextCommandCallingArgs args, SettingsCommand command)
@@ -271,6 +338,15 @@ namespace AutomaticClayFormer
         {
             if (command == null || capi == null) return;
 
+            if (command.Action == SettingsCommand.ServerSwitch)
+            {
+                // Said on joining too: only speak up when it's off, or when it changes
+                bool changed = ServerAllowed != command.Flag;
+                ServerAllowed = command.Flag;
+                if (changed) capi.ShowChatMessage(Lang.Get("automaticclayformer:prefix") + " " + Lang.Get(ServerAllowed ? "automaticclayformer:msg-server-on" : "automaticclayformer:msg-server-off"));
+                return;
+            }
+
             string message;
             switch (command.Action)
             {
@@ -278,6 +354,7 @@ namespace AutomaticClayFormer
                     Config.Enabled = true;
                     SaveConfig();
                     message = Lang.Get("automaticclayformer:cmd-on");
+                    if (!ServerAllowed) message += " " + Lang.Get("automaticclayformer:cmd-on-serveroff");
                     break;
 
                 case SettingsCommand.Off:
@@ -322,7 +399,8 @@ namespace AutomaticClayFormer
 
         string DescribeSettings()
         {
-            return Lang.Get("automaticclayformer:cmd-status",
+            string serverNote = ServerAllowed ? "" : Lang.Get("automaticclayformer:msg-server-off") + " ";
+            return serverNote + Lang.Get("automaticclayformer:cmd-status",
                 Lang.Get(Config.Enabled ? "automaticclayformer:on" : "automaticclayformer:off"),
                 Format(Config.Range),
                 Format(Reach()),

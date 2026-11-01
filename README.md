@@ -29,7 +29,10 @@ Type `/clayformer` in chat to see your current settings, and `/clayformer help` 
 | `/clayformer speed <clicks per second>` | How fast it works, 1 to 100. Default 20. Lower it if you see voxels flicker on a laggy server. |
 | `/clayformer messages` | Switches chat messages when forming starts and finishes on or off. Add `on` or `off` to choose. Problems like running out of clay are always shown. |
 | `/clayformer unmodded` | Switches whether automatic forming also works on servers without the mod (off by default; see Install). Add `on` or `off` to choose. |
+| `/clayformer server on` / `off` | **Server admins:** allow or stop automatic forming for everyone on the server. Without `on`/`off` it switches. |
 | `/clayformer help` | How to use the mod, and these commands |
+
+**For server admins:** `/clayformer server off` turns automatic forming off for everyone on the server: every player's game (2.3.0 or newer) stops forming automatically there, whatever their own settings, and says so in chat, also when they join. `/clayformer server on` allows it again. It's saved in the server's `ModConfig/AutomaticClayFormerServer.json` (`"AllowAutomaticForming": true`), which you can also edit while the server is stopped. Needs the `controlserver` privilege.
 
 Each player's settings are their own: the server passes `/clayformer` on to your game, which keeps the settings. That needs 2.1.0 or newer on both. (Before 2.1.0 the commands started with a dot: `.clayformer`.)
 

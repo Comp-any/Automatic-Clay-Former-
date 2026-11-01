@@ -2,7 +2,7 @@
   "type": "code",
   "name": "Automatic Clay Former",
   "modid": "automaticclayformer",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Hold clay near a clay form with a recipe selected and it shapes itself. Uses clay exactly like forming by hand. Range and speed are configurable with /clayformer (/clayformer help lists the commands)",
   "authors": [ "demonic69", "prescko", "rekimchuk13" ],
   "website": "https://github.com/Comp-any/Automatic-Clay-Former-",
