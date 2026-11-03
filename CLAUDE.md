@@ -26,10 +26,23 @@ What was tested from a Claude session on 2026-10-20 (this can change, so still t
 | `git push` to branches, including `main` | Repository settings writes (`gh api -X PATCH repos/...`, e.g. changing the default branch) |
 | | Pushing a tag (`git push origin v2.0.0`: HTTP 403), and making one through the API (`POST repos/.../git/refs`: "Write access to this GitHub API path is not permitted through this proxy"). Publish through the workflow instead (below) |
 | `gh workflow run` (workflow_dispatch) | `repos/.../actions/permissions` |
-| Reading runs, jobs and steps: `gh api repos/.../actions/runs`, `.../runs/<id>/jobs`, `gh run watch <id>` | Job logs and artifact downloads: they redirect to `*.blob.core.windows.net`, which is blocked |
+| Reading runs, jobs and steps: `gh api repos/.../actions/runs`, `.../runs/<id>/jobs`, `gh run watch <id> --interval 60` (see below) | Job logs and artifact downloads: they redirect to `*.blob.core.windows.net`, which is blocked |
 | Check-run annotations: `gh api repos/.../check-runs/<job id>/annotations` | GraphQL (`gh repo view`, `gh pr list`, `gh release download`): use `gh api` REST calls instead |
 | Downloading a release file: `gh api -H "Accept: application/octet-stream" repos/.../releases/assets/<asset id> > file` | |
 | GitHub itself (`git clone`, `github.com`) | NuGet, `cdn.vintagestory.at`, apt and Microsoft's .NET downloads: the workspace has no .NET SDK, so builds happen on GitHub Actions |
+
+## Waiting for CI without using up GitHub's limit
+
+Wait for a run with `gh run watch <run id> --interval 60 --exit-status`, never with the default. The default refreshes
+every 3 seconds, and while a run is in progress each refresh reads the run, its jobs, the workflow and annotations:
+14 API requests in 10 seconds when measured on 2026-11-03, about 5,000 an hour. A session's GitHub requests go
+through the Claude GitHub App as demonic69, and GitHub counts them against the account's personal 5,000 an hour, which
+the user's own tokens share (the Mod DB Uploader app, Vintage Auto Update in the game). On 2026-11-03 sessions waiting
+on builds used it up twice, and the app stopped working until the reset. `--interval 60` is about 300 an hour and
+needs no `sleep`.
+
+- Take the run id from the URL `gh workflow run` prints; don't poll `actions/runs` for it.
+- Never spin an `until` loop on `gh api` (or `git ls-remote`): it asks as fast as it can. Wait on the run instead.
 
 ## Building and reading CI results
 
