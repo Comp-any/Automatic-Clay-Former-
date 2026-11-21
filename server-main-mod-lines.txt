@@ -1,0 +1,54 @@
+41:21.11.2026 09:28:28 [Notification] Mods, sorted by dependency: game, automaticclayformer, vintagedoctor, creative, survival
+43:21.11.2026 09:28:29 [Notification] External Origins in load order: modorigin@~/vsgame/assets/creative/, modorigin@~/vsgame/assets/survival/, mod@automaticclayformer_2.4.0.zip, mod@vintagedoctor_1.2.0.zip
+86:21.11.2026 09:28:37 [Error] [Automatic Clay Former] Could not read ModConfig/AutomaticClayFormerServer.json, using default settings: Unexpected end when deserializing object. Path 'AllowAutomaticForming', line 2, position 0.
+216:21.11.2026 09:28:37 [Notification]     Mod 'vintagedoctor_1.2.0.zip' (vintagedoctor):
+218:21.11.2026 09:28:37 [Notification]     Mod 'automaticclayformer_2.4.0.zip' (automaticclayformer):
+247:21.11.2026 09:28:51 [Notification] [Automatic Clay Former] Checked 88 clay forming recipes for Vintage Doctor in 0.5s: 0 can't be finished automatically; the longest, game:clayoven-north, takes 266 clicks.
+252:⚠ Automatic Clay Former: Automatic Clay Former couldn't read the server's settings file, so automatic forming is allowed
+253:  [Automatic Clay Former] Could not read ModConfig/AutomaticClayFormerServer.json, using default settings: Unexpected end when deserializing object. Path 'AllowAutomaticForming', line 2, position 0.
+256:  Start the settings file afresh (/doctor fix automaticclayformer:server-config-unreadable/fix)
+259:✖ The config file AutomaticClayFormerServer.json can't be read (most likely Automatic Clay Former's)
+275:  Automatic Clay Former (1)
+280:✓ Automatic Clay Former: Automatic forming takes clay like forming by hand
+281:✓ Automatic Clay Former: Players may form clay automatically on this server
+282:✓ Automatic Clay Former: All 88 clay forming recipes can be finished by automatic forming
+300:Automatic Clay Former isn't shaping my clay (/doctor clayformer)
+305:Saved to ModData/vintagedoctor/last-report-server.txt
+306:21.11.2026 09:28:55 [Notification] [vintagedoctor] Check-up after start-up: 1 problem(s), 1 warning(s). Type /doctor to see them.
+309:21.11.2026 09:29:04 [Notification] == Automatic Clay Former on this server ==
+314:Why a clay form near you isn't being shaped is worked out by your own game, when it has Automatic Clay Former and Vintage Doctor.
+315:Saved to ModData/vintagedoctor/last-report-server.txt
+316:21.11.2026 09:29:10 [Notification] Handling Console Command /doctor mod automaticclayformer
+317:21.11.2026 09:29:10 [Notification] == Automatic Clay Former ==
+318:• Automatic Clay Former 2.4.0, by demonic69, prescko, rekimchuk13
+319:  Mod id automaticclayformer; Code mod; runs on: Universal; file automaticclayformer_2.4.0.zip
+321:  Its website (https://github.com/Comp-any/Automatic-Clay-Former-) Find Automatic Clay Former on the Mod DB (https://mods.vintagestory.at/list/mod?text=Automatic%20Clay%20Former)
+333:✓ Automatic Clay Former: Automatic forming takes clay like forming by hand
+334:✓ Automatic Clay Former: Players may form clay automatically on this server
+335:✓ Automatic Clay Former: All 88 clay forming recipes can be finished by automatic forming
+338:== Errors and warnings from Automatic Clay Former ==
+339:⚠ Automatic Clay Former: Automatic Clay Former couldn't read the server's settings file, so automatic forming is allowed
+340:  [Automatic Clay Former] Could not read ModConfig/AutomaticClayFormerServer.json, using default settings: Unexpected end when deserializing object. Path 'AllowAutomaticForming', line 2, position 0.
+343:  Start the settings file afresh (/doctor fix automaticclayformer:server-config-unreadable/fix)
+344:✓ Nothing from Automatic Clay Former in the log this session.
+347:Switch Automatic Clay Former off (/doctor fix doctor:disable-mod automaticclayformer) A report about Automatic Clay Former (/doctor bugreport automaticclayformer) Every mod at a glance (/doctor mods) Back to the check-up (/doctor)
+348:Saved to ModData/vintagedoctor/last-report-server.txt
+358:✓ Automatic Clay Former: Automatic Clay Former can make this: about 266 clicks and 68 clay
+359:  Automatic Clay Former's page (/doctor clayformer)
+363:Saved to ModData/vintagedoctor/last-report-server.txt
+368:    Fix from Automatic Clay Former: automaticclayformer:config-unreadable/fix
+369:    Fix from Automatic Clay Former: automaticclayformer:server-config-unreadable/fix
+370:    Page from Automatic Clay Former: /doctor clayformer
+371:• 2 vintagedoctor.json file(s) read
+372:  automaticclayformer:config/vintagedoctor.json
+373:  vintagedoctor:config/vintagedoctor.json
+377:Saved to ModData/vintagedoctor/last-report-server.txt
+381:21.11.2026 09:29:34 [Notification] == Automatic Clay Former on this server ==
+385:  Allow automatic forming again (/doctor fix bus:automaticclayformer:server-on)
+388:Why a clay form near you isn't being shaped is worked out by your own game, when it has Automatic Clay Former and Vintage Doctor.
+389:Saved to ModData/vintagedoctor/last-report-server.txt
+390:21.11.2026 09:29:40 [Notification] Handling Console Command /doctor fix bus:automaticclayformer:server-on
+391:21.11.2026 09:29:40 [Notification] [vintagedoctor] Fix 'bus:automaticclayformer:server-on' () asked for by the console: Automatic clay forming is allowed again on this server.
+394:21.11.2026 09:29:46 [Notification] == Automatic Clay Former on this server ==
+399:Why a clay form near you isn't being shaped is worked out by your own game, when it has Automatic Clay Former and Vintage Doctor.
+400:Saved to ModData/vintagedoctor/last-report-server.txt

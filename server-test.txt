@@ -1,0 +1,15 @@
+PASS the server ran the recipe check
+PASS the check-up has the clay charging card
+PASS the check-up has the server switch card
+PASS the recipe check finished every recipe
+PASS the doctor explains the mod's broken server settings file (JSON known problem)
+PASS the mod's page is listed as a question
+PASS the page of its own is built on the server
+PASS the item page has the mod's card (game:clayoven-north)
+PASS the doctor sees this version, demonic69 first
+PASS the mod's file is named after its version
+PASS the switch turned off shows on the page
+PASS the switched-off card offers the fix
+PASS the fix over the event bus switches it back on
+PASS the fix saved the server's settings
+12 passed, 0 failed

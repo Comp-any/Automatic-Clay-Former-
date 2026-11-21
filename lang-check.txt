@@ -1,0 +1,1 @@
+135 texts in en.json, 135 used by the code

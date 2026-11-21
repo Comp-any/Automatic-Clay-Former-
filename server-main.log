@@ -1,0 +1,429 @@
+21.11.2026 09:28:28 [Notification] Server logger started.
+21.11.2026 09:28:28 [Notification] Game Version: v1.22.7 (Stable)
+21.11.2026 09:28:28 [Notification] C# Framework: .net 10.0.15
+21.11.2026 09:28:28 [Notification] Zstd Version: 1.5.7
+21.11.2026 09:28:28 [Notification] Operating System: Linux (Ubuntu 26.04.1 LTS) [Kernel 7.0.0.1020]
+21.11.2026 09:28:28 [Notification] CPU Cores: 4
+21.11.2026 09:28:28 [Notification] CPU: Intel(R) Xeon(R) 6973P-C
+21.11.2026 09:28:28 [Notification] Available RAM: 15982 MB
+21.11.2026 09:28:28 [Event] It begins...
+21.11.2026 09:28:28 [Event] Launching server...
+21.11.2026 09:28:28 [Event] It senses...
+21.11.2026 09:28:28 [Event] Server v1.22.7, network v1.22.6, api v1.22.0
+21.11.2026 09:28:28 [Notification] Entering runphase Initialization
+21.11.2026 09:28:28 [Event] Loading configuration...
+21.11.2026 09:28:28 [Notification] Entering runphase Configuration
+21.11.2026 09:28:28 [Notification] serverconfig.json not found, creating new one
+21.11.2026 09:28:28 [Notification] Loading savegame
+21.11.2026 09:28:28 [Notification] Create new save game data. Playstyle: surviveandbuild
+21.11.2026 09:28:28 [Notification] Savegame ~/work/_temp/vsdata/Saves/default.vcdbs loaded
+21.11.2026 09:28:28 [Notification] World size = 1024000 256 1024000
+21.11.2026 09:28:28 [Notification] Start discovering assets
+21.11.2026 09:28:28 [Notification] Found 2 base assets in category blocktypes
+21.11.2026 09:28:28 [Notification] Found 0 base assets in category itemtypes
+21.11.2026 09:28:28 [Notification] Found 35 base assets in category lang
+21.11.2026 09:28:28 [Notification] Found 0 base assets in category patches
+21.11.2026 09:28:28 [Notification] Found 24 base assets in category config
+21.11.2026 09:28:28 [Notification] Found 0 base assets in category worldproperties
+21.11.2026 09:28:28 [Notification] Found 1 base assets in category sounds
+21.11.2026 09:28:28 [Notification] Found 230 base assets in category shapes
+21.11.2026 09:28:28 [Notification] Found 21 base assets in category textures
+21.11.2026 09:28:28 [Notification] Found 0 base assets in category recipes
+21.11.2026 09:28:28 [Notification] Found 0 base assets in category worldgen
+21.11.2026 09:28:28 [Notification] Found 3 base assets in category entities
+21.11.2026 09:28:28 [Notification] Found 316 base assets in total
+21.11.2026 09:28:28 [Event] Building assets...
+21.11.2026 09:28:28 [Notification] Entering runphase LoadAssets
+21.11.2026 09:28:28 [Notification] Will search the following paths for mods:
+21.11.2026 09:28:28 [Notification]     ~/vsgame/Mods
+21.11.2026 09:28:28 [Notification]     ~/work/_temp/vsdata/Mods
+21.11.2026 09:28:28 [Notification] Found 5 mods (0 disabled)
+21.11.2026 09:28:28 [Notification] Mods, sorted by dependency: game, automaticclayformer, vintagedoctor, creative, survival
+21.11.2026 09:28:28 [Notification] Instantiated 150 mod systems from 5 enabled mods
+21.11.2026 09:28:29 [Notification] External Origins in load order: modorigin@~/vsgame/assets/creative/, modorigin@~/vsgame/assets/survival/, mod@automaticclayformer_2.4.0.zip, mod@vintagedoctor_1.2.0.zip
+21.11.2026 09:28:29 [Notification] Found 541 external assets in category blocktypes
+21.11.2026 09:28:29 [Notification] Found 315 external assets in category itemtypes
+21.11.2026 09:28:29 [Notification] Found 2 external assets in category lang
+21.11.2026 09:28:29 [Notification] Found 10 external assets in category patches
+21.11.2026 09:28:29 [Notification] Found 130 external assets in category config
+21.11.2026 09:28:29 [Notification] Found 25 external assets in category worldproperties
+21.11.2026 09:28:29 [Notification] Found 1 external assets in category sounds
+21.11.2026 09:28:29 [Notification] Found 6123 external assets in category shapes
+21.11.2026 09:28:29 [Notification] Found 25 external assets in category textures
+21.11.2026 09:28:29 [Notification] Found 419 external assets in category recipes
+21.11.2026 09:28:29 [Notification] Found 1455 external assets in category worldgen
+21.11.2026 09:28:29 [Notification] Found 74 external assets in category entities
+21.11.2026 09:28:29 [Notification] Found 0 external assets in category compatibility
+21.11.2026 09:28:29 [Notification] Reloaded lang file with mod assets
+21.11.2026 09:28:29 [Notification] Compatibility lib: 0 assets added, 0 assets replaced.
+21.11.2026 09:28:29 [Notification] JsonPatch Loader: 14 patches total, successfully applied 14 patches, unmet conditions on 23 patches, no errors
+21.11.2026 09:28:29 [Event] It remembers...
+21.11.2026 09:28:31 [Notification] Loaded 4468 unique items
+21.11.2026 09:28:31 [Event] All that came before...
+21.11.2026 09:28:34 [Notification] Loaded 14089 unique blocks
+21.11.2026 09:28:35 [Notification] Loaded 820 unique entitiess
+21.11.2026 09:28:35 [Notification] BlockLoader: Entities, Blocks and Items loaded
+21.11.2026 09:28:35 [Event] Remapping blocks and items...
+21.11.2026 09:28:35 [Event] 15 cooking recipes loaded
+21.11.2026 09:28:35 [Event] Taste and smell...
+21.11.2026 09:28:35 [Event] 9 metal alloys loaded
+21.11.2026 09:28:35 [Event] Glimmers in the soil...
+21.11.2026 09:28:36 [Event] 1152 grid recipes loaded from 268 files
+21.11.2026 09:28:36 [Event] Grand inventions...
+21.11.2026 09:28:36 [Event] 44 smithing recipes loaded from 43 files
+21.11.2026 09:28:36 [Event] Burning sparks...
+21.11.2026 09:28:36 [Event] 31 clay forming recipes loaded from 31 files
+21.11.2026 09:28:36 [Event] Molded forms...
+21.11.2026 09:28:36 [Event] 12 knapping recipes loaded from 12 files
+21.11.2026 09:28:36 [Event] Simple tools...
+21.11.2026 09:28:36 [Event] 90 barrel recipe recipes loaded from 41 files
+21.11.2026 09:28:36 [Notification] Tags registry was locked.
+21.11.2026 09:28:36 [Notification] Entering runphase AssetsFinalize
+21.11.2026 09:28:37 [Event] Server assets loaded, parsed, registered and finalized
+21.11.2026 09:28:37 [Event] Initialising systems...
+21.11.2026 09:28:37 [Notification] Entering runphase LoadGamePre
+21.11.2026 09:28:37 [Notification] Reloaded 19 weather patterns, 5 wind patterns and 5 weather events
+21.11.2026 09:28:37 [Error] [Automatic Clay Former] Could not read ModConfig/AutomaticClayFormerServer.json, using default settings: Unexpected end when deserializing object. Path 'AllowAutomaticForming', line 2, position 0.
+21.11.2026 09:28:37 [Notification] Started 127 systems on Server:
+21.11.2026 09:28:37 [Notification]     Mod 'VSEssentials.dll' (game):
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.Core
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenTerra
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenSnowLayer
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.EntityPartitioning
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ErrorReporter
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenTerraPostProcess
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.ModCompatiblityUtil
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.NoObf.ModJsonPatchLoader
+21.11.2026 09:28:37 [Notification]         FluffyClouds.FluffyCloudsModSystem
+21.11.2026 09:28:37 [Notification]         Vintagestory.Systems.ModSystemTfEditFromAttributes
+21.11.2026 09:28:37 [Notification]         Vintagestory.Essentials.PathfindSystem
+21.11.2026 09:28:37 [Notification]         Vintagestory.Essentials.PathFindDebug
+21.11.2026 09:28:37 [Notification]         Vintagestory.Essentials.PathfindingAsync
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.JsonExport
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.ModBasicBlocksLoader
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenMaps
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenRockStrataNew
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenHotSprings
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenCreatures
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.ModSystemWorldGenStructures
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemItemRendererOptimizer
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.AiRuntimeConfig
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemSyncHarvestableDropsToClient
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemEmotes
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.LeafBlockDecay
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.POIRegistry
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.RoomRegistry
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.WeatherSystemCommands
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.WeatherSystemServer
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.SystemRemotePlayerTracking
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.WorldMapManager
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenDeposits
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.NoObf.ModRegistryObjectTypeLoader
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.LoadColorMaps
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenCaves
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenStructures
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.WgenCommands
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenBlockLayers
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenPonds
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ClothManager
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenStructuresPosPass
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenVegetationAndPatches
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenRivulets
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenLightSurvival
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.CollectibleBuffDebug
+21.11.2026 09:28:37 [Notification]     Mod 'VSSurvivalMod.dll' (survival):
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemControlPoints
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.SurvivalCoreSystem
+21.11.2026 09:28:37 [Notification]         Vintagestory.Systems.StoryLockableDoor
+21.11.2026 09:28:37 [Notification]         Vintagestory.Client.NoObf.StoryGenFailedSystem
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.UpgradeTasks
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.ChiselBlockBulkSetMaterial
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.ModSystemDetailModeSync
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.NpcControl
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.ModSystemTiledDungeons
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemExplosionAffectedStability
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.MyceliumSystem
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModsystemButterflySpawnCondsExtra
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemFishInstaFlee
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemCatchCreature
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.FishingSupportModSystem
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemGliding
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemSnowShoveling
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemSubTongsDurability
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemSwoopDev
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.Timeswitch
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ClutterBookshelfUtil
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ScreenshakeToClientModSystem
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemResoArchiveCommands
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.StoryStructuresSpawnConditions
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemNPCHairStyling
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemSkinnableAdditions
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemVillagerDebug
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemAuction
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemBlockReinforcement
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.Core
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemBoatingSoundAndRatlineStamina
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.CharacterSystem
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.CustomSpawnConditions
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.VariablesModSystem
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModsystemElevator
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ActivityModSystem
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ActivityEditorSystem
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemFarming
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemCommandHandbook
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemTutorial
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.HeldItemMouseInputHandler
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemCorpseReturnTeleporter
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemNightVision
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.TobiasTeleporter
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModJournal
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.LiquidItemStackRenderer
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemStructureLocator
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModLootRandomizer
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemEntityOwnership
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemRifts
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemRiftWeather
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSleeping
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemSupportBeamPlacer
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.TeleporterManager
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModTemperature
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.SystemTemporalStability
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.TemporalStabilityEffects
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemClimateSpecificTraderTypes
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemWearableStats
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemEditableBook
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.Mechanics.ModSystemWindTurbulence
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.Mechanics.MechanicalPowerMod
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenDungeons
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.GenStoryStructures
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.WgenCommandsExt
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenDevastationLayer
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.RecipeRegistrySystem
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.RecipeLoader
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemFishDepletion
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemWormGrunting
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemFireFromLightning
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemOreMap
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemSnowballs
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.HumanoidOutfits
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.ModSystemDevastationEffects
+21.11.2026 09:28:37 [Notification]         Vintagestory.GameContent.DisableRecipeRegisteringSystem
+21.11.2026 09:28:37 [Notification]     Mod 'VSCreativeMod.dll' (creative):
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.Core
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.WorldEdit.WorldEdit
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenBlockLayersFlat
+21.11.2026 09:28:37 [Notification]         Vintagestory.ServerMods.GenLightCreative
+21.11.2026 09:28:37 [Notification]     Mod 'vintagedoctor_1.2.0.zip' (vintagedoctor):
+21.11.2026 09:28:37 [Notification]         VintageDoctor.VintageDoctorSystem
+21.11.2026 09:28:37 [Notification]     Mod 'automaticclayformer_2.4.0.zip' (automaticclayformer):
+21.11.2026 09:28:37 [Notification]         AutomaticClayFormer.ClayFormerModSystem
+21.11.2026 09:28:37 [Event] 26 traits loaded from 1 files
+21.11.2026 09:28:37 [Event] 6 classes loaded from 1 files
+21.11.2026 09:28:39 [Notification] Server map set
+21.11.2026 09:28:39 [Event] A world unbroken...
+21.11.2026 09:28:39 [Notification] Entering runphase GameReady
+21.11.2026 09:28:39 [Notification] Entering runphase WorldReady
+21.11.2026 09:28:39 [Event] The center unfolding...
+21.11.2026 09:28:39 [Event] Starting world generators...
+21.11.2026 09:28:43 [Notification] Reloaded 35 tree generators
+21.11.2026 09:28:43 [Event] Loading 7x7x8 spawn chunks...
+21.11.2026 09:28:43 [Event] 0% (49 in queue)
+21.11.2026 09:28:43 [Event] The carved mountains...
+21.11.2026 09:28:45 [Event] 0% (49 in queue)
+21.11.2026 09:28:45 [Event] The rolling hills...
+21.11.2026 09:28:47 [Event] 0% (81 in queue)
+21.11.2026 09:28:47 [Event] The sheer cliffs...
+21.11.2026 09:28:48 [Event] 0% (138 in queue)
+21.11.2026 09:28:48 [Event] The endless plains...
+21.11.2026 09:28:50 [Event] 0% (175 in queue)
+21.11.2026 09:28:50 [Event] The winter snows...
+21.11.2026 09:28:51 [Event] Begin game ticking...
+21.11.2026 09:28:51 [Event] ... it calls to you
+21.11.2026 09:28:51 [Notification] Entering runphase RunGame
+21.11.2026 09:28:51 [Notification] Starting server threads
+21.11.2026 09:28:51 [Event] Dedicated Server now running on Port 42420 and all ips!
+21.11.2026 09:28:51 [Event] Return again.
+21.11.2026 09:28:51 [Notification] Please be aware that as of 1.20, servers default configurations have changed - servers no longer register themselves to the public servers list and are invite-only (whitelisted) out of the box. If you desire so, you can enable server advertising with '/serverconfig advertise on' and disable the whitelist mode with '/serverconfig whitelistmode off'
+21.11.2026 09:28:51 [Notification] [Automatic Clay Former] Checked 88 clay forming recipes for Vintage Doctor in 0.5s: 0 can't be finished automatically; the longest, game:clayoven-north, takes 266 clicks.
+21.11.2026 09:28:52 [Notification] Handling Console Command /doctor 
+21.11.2026 09:28:52 [Notification] == The server ==
+✓ No crash reports: the game hasn't crashed on this side.
+✓ All 2 mod(s) loaded and started without the game reporting a problem.
+⚠ Automatic Clay Former: Automatic Clay Former couldn't read the server's settings file, so automatic forming is allowed
+  [Automatic Clay Former] Could not read ModConfig/AutomaticClayFormerServer.json, using default settings: Unexpected end when deserializing object. Path 'AllowAutomaticForming', line 2, position 0.
+  ModConfig/AutomaticClayFormerServer.json isn't valid JSON, so the server uses the default (automatic forming allowed) until it's fixed.
+  → Fix the file, or start it afresh: the mod writes a new one with the default settings at the next start.
+  Start the settings file afresh (/doctor fix automaticclayformer:server-config-unreadable/fix)
+✓ No errors in the log this session.
+✓ 2 mod file(s) in 2 folder(s), nothing wrong with them.
+✖ The config file AutomaticClayFormerServer.json can't be read (most likely Automatic Clay Former's)
+  Unexpected end of content while loading JObject. Path 'AllowAutomaticForming', line 2, position 0.
+  The file isn't valid JSON any more (a missing comma or bracket after editing by hand, most often). The mod it belongs to then starts with its defaults, or fails to start.
+  → Open it in a text editor and fix the line the message names, or let the mod write a fresh one.
+  Move AutomaticClayFormerServer.json aside so a fresh one is written (/doctor fix doctor:reset-config AutomaticClayFormerServer.json)
+• The server has only just started; give it a minute before judging its speed.
+  Last minute: average 32.3 ms, 95% under 34 ms, worst 34 ms (18 ticks).
+  Measure where the time goes (20 seconds) (/doctor fix doctor:profile 20)
+✓ 43 creatures and things loaded (0 items on the ground), 392 chunks, 0 player(s).
+  Most of: game:chicken 22, game:raccoon 11, game:wolf 4, game:armorstand 2, game:fish 2
+  392 chunks loaded for 0 player(s).
+✓ Memory: the game holds 1.2 GB of the 15.6 GB it can use.
+  991 MB in the game's own objects; 10 full clean-ups so far; 4 processor threads.
+✓ 86.8 GB free where the world is saved.
+  The save file is 4 KB.
+• 1 mod(s) change the game's code in 1 place(s) (0 shared with another mod)
+  Automatic Clay Former (1)
+  Mods patch the game's own code where it offers no other way in. It is normal, but it is also what breaks first when the game updates, and two mods patching the same place can get in each other's way.
+  All code patches (/doctor patches)
+
+== Checks from your mods ==
+✓ Automatic Clay Former: Automatic forming takes clay like forming by hand
+✓ Automatic Clay Former: Players may form clay automatically on this server
+✓ Automatic Clay Former: All 88 clay forming recipes can be finished by automatic forming
+  71.5 clicks on average; the longest is Clay oven, with 266 clicks. Checked in 0.5 s.
+
+== What are you seeing? ==
+Pick what matches; each opens a page that looks into just that.
+The game crashed (/doctor crash)
+The game is slow or stutters (/doctor perf)
+A mod isn't working (/doctor mods)
+Something broke after I added or updated mods (/doctor changes)
+An item looks or acts wrong (hold it first) (/doctor item hand)
+The block I'm looking at looks or acts wrong (/doctor block)
+I can't craft something (/doctor craft hand)
+Show me what happened while the game started (/doctor startup)
+Show me every error and warning (/doctor log)
+Check my Mods folder and config files (/doctor files)
+Are any mods getting in each other's way? (/doctor clashes)
+Which mods change the game's code? (/doctor patches)
+Is my world all right? (/doctor world)
+Automatic Clay Former isn't shaping my clay (/doctor clayformer)
+Run the deeper checks (slower) (/doctor deep)
+Put together a report to post (/doctor bugreport)
+For mod authors: what mods told the doctor (/doctor api)
+Every page is a command: /doctor crash, perf, mods, mod <mod id>, log [mod id], startup, files, patches, changes, world, item <code>, craft <code>, deep, bugreport [mod id], api. A fix: /doctor fix <id> [argument].
+Saved to ModData/vintagedoctor/last-report-server.txt
+21.11.2026 09:28:55 [Notification] [vintagedoctor] Check-up after start-up: 1 problem(s), 1 warning(s). Type /doctor to see them.
+21.11.2026 09:29:01 [Warning] Server overloaded. A tick took 691ms to complete.
+21.11.2026 09:29:04 [Notification] Handling Console Command /doctor clayformer
+21.11.2026 09:29:04 [Notification] == Automatic Clay Former on this server ==
+✓ Automatic forming takes clay like forming by hand
+✓ Players may form clay automatically on this server
+✓ All 88 clay forming recipes can be finished by automatic forming
+  71.5 clicks on average; the longest is Clay oven, with 266 clicks. Checked in 0.5 s.
+Why a clay form near you isn't being shaped is worked out by your own game, when it has Automatic Clay Former and Vintage Doctor.
+Saved to ModData/vintagedoctor/last-report-server.txt
+21.11.2026 09:29:10 [Notification] Handling Console Command /doctor mod automaticclayformer
+21.11.2026 09:29:10 [Notification] == Automatic Clay Former ==
+• Automatic Clay Former 2.4.0, by demonic69, prescko, rekimchuk13
+  Mod id automaticclayformer; Code mod; runs on: Universal; file automaticclayformer_2.4.0.zip
+  Hold clay near a clay form with a recipe selected and it shapes itself. Uses clay exactly like forming by hand. Range and speed are configurable with /clayformer (/clayformer help lists the commands)
+  Its website (https://github.com/Comp-any/Automatic-Clay-Former-) Find Automatic Clay Former on the Mod DB (https://mods.vintagestory.at/list/mod?text=Automatic%20Clay%20Former)
+✓ Everything it needs is there (1).
+  The game: wants 1.22.0 or newer, this is 1.22.7
+✖ The config file AutomaticClayFormerServer.json can't be read
+  Unexpected end of content while loading JObject. Path 'AllowAutomaticForming', line 2, position 0.
+  The file isn't valid JSON any more (a missing comma or bracket after editing by hand, most often). The mod it belongs to then starts with its defaults, or fails to start.
+  Move AutomaticClayFormerServer.json aside so a fresh one is written (/doctor fix doctor:reset-config AutomaticClayFormerServer.json)
+• It changes the game's code in 1 place(s), 0 of them shared with other mods
+  BlockEntityClayForm.OnUseOver
+  Mods patch the game's own code where it offers no other way in. It is normal, but it is also what breaks first when the game updates, and two mods patching the same place can get in each other's way.
+
+== Checks from your mods ==
+✓ Automatic Clay Former: Automatic forming takes clay like forming by hand
+✓ Automatic Clay Former: Players may form clay automatically on this server
+✓ Automatic Clay Former: All 88 clay forming recipes can be finished by automatic forming
+  71.5 clicks on average; the longest is Clay oven, with 266 clicks. Checked in 0.5 s.
+
+== Errors and warnings from Automatic Clay Former ==
+⚠ Automatic Clay Former: Automatic Clay Former couldn't read the server's settings file, so automatic forming is allowed
+  [Automatic Clay Former] Could not read ModConfig/AutomaticClayFormerServer.json, using default settings: Unexpected end when deserializing object. Path 'AllowAutomaticForming', line 2, position 0.
+  ModConfig/AutomaticClayFormerServer.json isn't valid JSON, so the server uses the default (automatic forming allowed) until it's fixed.
+  → Fix the file, or start it afresh: the mod writes a new one with the default settings at the next start.
+  Start the settings file afresh (/doctor fix automaticclayformer:server-config-unreadable/fix)
+✓ Nothing from Automatic Clay Former in the log this session.
+
+== Next ==
+Switch Automatic Clay Former off (/doctor fix doctor:disable-mod automaticclayformer) A report about Automatic Clay Former (/doctor bugreport automaticclayformer) Every mod at a glance (/doctor mods) Back to the check-up (/doctor)
+Saved to ModData/vintagedoctor/last-report-server.txt
+21.11.2026 09:29:16 [Notification] Handling Console Command /doctor item game:clayoven-north
+21.11.2026 09:29:16 [Notification] == A block or item ==
+• Clay oven (game:clayoven-north) comes from the game itself
+  A block with the code game:clayoven-north; class BlockClayOven; run by Vintagestory.GameContent.BlockClayOven
+  Behaviours: BlockBehaviorLockable, BlockBehaviorHorizontalOrientable, BlockBehaviorIgniteable, BlockBehaviorReinforcable
+  Keeps its own data and does things over time as: Oven
+✓ The log has no error or warning that mentions it.
+
+== What your mods say about it ==
+✓ Automatic Clay Former: Automatic Clay Former can make this: about 266 clicks and 68 clay
+  Automatic Clay Former's page (/doctor clayformer)
+
+== Next ==
+Why can't I craft it? (/doctor craft game:clayoven-north) Back to the check-up (/doctor)
+Saved to ModData/vintagedoctor/last-report-server.txt
+21.11.2026 09:29:22 [Notification] Handling Console Command /doctor api
+21.11.2026 09:29:22 [Notification] == For mod authors ==
+Other mods can hand the doctor their own checks, fixes, pages and explanations for log messages. This page shows what has been handed over on this side.
+• 0 check(s), 2 fix(es) and 1 page(s) from other mods; 17 log message(s) the doctor can explain.
+    Fix from Automatic Clay Former: automaticclayformer:config-unreadable/fix
+    Fix from Automatic Clay Former: automaticclayformer:server-config-unreadable/fix
+    Page from Automatic Clay Former: /doctor clayformer
+• 2 vintagedoctor.json file(s) read
+  automaticclayformer:config/vintagedoctor.json
+  vintagedoctor:config/vintagedoctor.json
+• 2 declared clash(es) between mods.
+Three ways in: a few lines of C#, the event bus (no reference to the doctor needed), or a JSON file in your mod's assets (no code at all).
+How to hand the doctor your own checks (https://github.com/Comp-any/Vintage-Doctor/blob/main/docs/api.md)
+Saved to ModData/vintagedoctor/last-report-server.txt
+21.11.2026 09:29:28 [Notification] Handling Console Command /clayformer server off
+21.11.2026 09:29:28 [Notification] Automatic clay forming is now off for everyone on this server. (Players on versions before 2.3.0 don't know this switch; it's kept in ModConfig/AutomaticClayFormerServer.json.)
+21.11.2026 09:29:34 [Notification] Handling Console Command /doctor clayformer
+21.11.2026 09:29:34 [Notification] == Automatic Clay Former on this server ==
+✓ Automatic forming takes clay like forming by hand
+• Automatic forming is turned off on this server
+  Turned off with /clayformer server off, and kept in ModConfig/AutomaticClayFormerServer.json.
+  Allow automatic forming again (/doctor fix bus:automaticclayformer:server-on)
+✓ All 88 clay forming recipes can be finished by automatic forming
+  71.5 clicks on average; the longest is Clay oven, with 266 clicks. Checked in 0.5 s.
+Why a clay form near you isn't being shaped is worked out by your own game, when it has Automatic Clay Former and Vintage Doctor.
+Saved to ModData/vintagedoctor/last-report-server.txt
+21.11.2026 09:29:40 [Notification] Handling Console Command /doctor fix bus:automaticclayformer:server-on
+21.11.2026 09:29:40 [Notification] [vintagedoctor] Fix 'bus:automaticclayformer:server-on' () asked for by the console: Automatic clay forming is allowed again on this server.
+21.11.2026 09:29:40 [Notification] Automatic clay forming is allowed again on this server.
+21.11.2026 09:29:46 [Notification] Handling Console Command /doctor clayformer
+21.11.2026 09:29:46 [Notification] == Automatic Clay Former on this server ==
+✓ Automatic forming takes clay like forming by hand
+✓ Players may form clay automatically on this server
+✓ All 88 clay forming recipes can be finished by automatic forming
+  71.5 clicks on average; the longest is Clay oven, with 266 clicks. Checked in 0.5 s.
+Why a clay form near you isn't being shaped is worked out by your own game, when it has Automatic Clay Former and Vintage Doctor.
+Saved to ModData/vintagedoctor/last-report-server.txt
+21.11.2026 09:29:52 [Notification] Handling Console Command /stop 
+21.11.2026 09:29:52 [Notification] Message to all in group 0: Console Admin commenced a server shutdown
+21.11.2026 09:29:52 [Event] Console Admin shuts down server.
+21.11.2026 09:29:52 [Notification] Server stop requested, begin shutdown sequence. Stop reason: Shutdown via server command
+21.11.2026 09:29:52 [Notification] Server ticking has been suspended
+21.11.2026 09:29:52 [Notification] Entering runphase Shutdown
+21.11.2026 09:29:52 [Event] Mods and systems notified, now saving everything...
+21.11.2026 09:29:52 [Event] It pauses.
+21.11.2026 09:29:52 [Event] One last gaze...
+21.11.2026 09:29:52 [Event] Saved player world data...
+21.11.2026 09:29:52 [Event] Saved map regions...
+21.11.2026 09:29:52 [Event] Then all goes quiet...
+21.11.2026 09:29:52 [Event] Saved map chunks...
+21.11.2026 09:29:52 [Event] The waters recede...
+21.11.2026 09:29:52 [Event] Saved loaded chunks...
+21.11.2026 09:29:52 [Event] The mountains fade...
+21.11.2026 09:29:52 [Event] The dark settles in.
+21.11.2026 09:29:52 [Event] Saved generating chunks...
+21.11.2026 09:29:52 [Event] Saved savegamedata...2
+21.11.2026 09:29:52 [Event] World saved! Saved 8 chunks, 1 mapchunks, 16 mapregions.
+21.11.2026 09:29:52 [Event] It sighs...
+21.11.2026 09:29:52 [Event] Shutting down 10 server threads... 
+21.11.2026 09:29:52 [Event] Killed console thread
+21.11.2026 09:29:52 [Event] Alone again...
+21.11.2026 09:29:52 [Event] All threads gracefully shut down
+21.11.2026 09:29:52 [Event] Time to rest.
+21.11.2026 09:29:52 [Event] Doing last tick...
+21.11.2026 09:29:52 [Event] Stopped the server!
+21.11.2026 09:29:52 [Notification] Shut down command executed
