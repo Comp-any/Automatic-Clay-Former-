@@ -1,4 +1,17 @@
-**Automatic Clay Former 2.3.0** for Vintage Story 1.22. Place clay, pick a recipe, hold clay of the same type, and the form shapes itself.
+**Automatic Clay Former 2.4.0** for Vintage Story 1.22. Place clay, pick a recipe, hold clay of the same type, and the form shapes itself.
+
+**What's new: checks in Vintage Doctor.** With [Vintage Doctor](https://mods.vintagestory.at/show/mod/80941) installed too, Automatic Clay Former adds its own checks to the doctor's window (Ctrl+Shift+D or `/doctor`). Neither mod needs the other.
+- **"Automatic Clay Former isn't shaping my clay"** (`/doctor clayformer`): goes through every reason the clay form you look at isn't being worked (your setting, the server, the clay in your hand, the recipe, the clay type, the distance, land claims, a pause, the tool on a server without the mod) and says what to do.
+- **On the server:** whether automatic forming takes clay like forming by hand, whether it's turned off (with a button to allow it again), which players have which version, and whether every clay forming recipe in the game, other mods' included, can be finished automatically.
+- **In your game:** whether automatic forming works where you are and why not, settings worth a second look, and what went wrong this session, with buttons to switch it on or to stop it on servers without the mod.
+- **On an item's page:** whether Automatic Clay Former can make it, in about how many clicks and how much clay.
+- The doctor also explains the mod's log messages (a settings file it couldn't read, with a button to start it afresh) and warns when an older clay former is installed alongside.
+
+**Install:** put the zip in your `Mods` folder. In multiplayer the server should have it too, so automatic forming takes clay like forming by hand.
+
+---
+
+**2.3.0:**
 
 **What's new:**
 - **Server admins can turn automatic forming off for everyone:** `/clayformer server off` (and `/clayformer server on` to allow it again). Every player's game then stops forming automatically on that server, whatever their own settings, and tells them in chat, also when they join. It's saved in the server's `ModConfig/AutomaticClayFormerServer.json`. Needs the `controlserver` privilege.

@@ -47,9 +47,18 @@ needs no `sleep`.
 ## Building and reading CI results
 
 GitHub Actions (`.github/workflows/build.yml`) builds every push against the official Vintage Story server
-files and runs `tests/PlannerTests`. Since job logs can't be read from a session, a failing build or test step
-puts the end of its output into an annotation (read it with the check-runs annotations call above), and the
-test results are notices on the run.
+files, checks the texts (`tools/check_lang.py`: every text the code or `vintagedoctor.json` uses is in `en.json` with the
+right number of `{n}`), runs `tests/PlannerTests`, then runs a real server with the mod and Vintage Doctor (downloaded
+from the Mod DB) and drives `/doctor ...` from its console (2.4.0+). Everything is pushed to the branch
+**`ci-results-<branch>`** (build.log, test.log, server-console.log with the doctor's answers, server-test.txt with
+PASS/FAIL lines, server-main.log, the zip): `git fetch origin ci-results-<branch>` then `git show FETCH_HEAD:server-test.txt`.
+That works even when the API can't reach this repository (see above). A failing step also puts the end of its output
+into an annotation.
+
+**Vintage Doctor** (`src/DoctorBridge.cs`, `assets/automaticclayformer/config/vintagedoctor.json`): over the event bus
+only, no DLL reference. Its API is in the private repo Comp-any/Vintage-Doctor, `docs/api.md`. A new check needs a line
+in the server test's `check` list when the server can show it; the player's half (the window, client cards and fixes)
+can't be run in CI, so ask the user to look.
 
 **Publishing:** a push to `main` whose `modinfo.json` version has no release yet publishes it by itself once it has
 built and passed the tests (tag `v` + the version, the zip, `RELEASE_NOTES.md` as the notes). So publishing a new

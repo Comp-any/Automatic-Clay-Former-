@@ -1,0 +1,65 @@
+{
+  "knownProblems": [
+    {
+      "id": "config-unreadable",
+      "match": "[Automatic Clay Former] Could not read ModConfig/AutomaticClayFormer.json",
+      "side": "client",
+      "level": "warning",
+      "title": "automaticclayformer:doctor-known-config-title",
+      "explain": "automaticclayformer:doctor-known-config-why",
+      "advice": "automaticclayformer:doctor-known-config-advice",
+      "fix": {
+        "type": "resetConfig",
+        "file": "AutomaticClayFormer.json",
+        "label": "automaticclayformer:doctor-known-config-fix"
+      }
+    },
+    {
+      "id": "server-config-unreadable",
+      "match": "[Automatic Clay Former] Could not read ModConfig/AutomaticClayFormerServer.json",
+      "side": "server",
+      "level": "warning",
+      "title": "automaticclayformer:doctor-known-server-config-title",
+      "explain": "automaticclayformer:doctor-known-server-config-why",
+      "advice": "automaticclayformer:doctor-known-config-advice",
+      "fix": {
+        "type": "resetConfig",
+        "file": "AutomaticClayFormerServer.json",
+        "label": "automaticclayformer:doctor-known-config-fix"
+      }
+    },
+    {
+      "id": "config-unsaved",
+      "match": "[Automatic Clay Former] Could not save ModConfig/",
+      "level": "warning",
+      "title": "automaticclayformer:doctor-known-unsaved-title",
+      "explain": "automaticclayformer:doctor-known-unsaved-why",
+      "advice": "automaticclayformer:doctor-known-unsaved-advice"
+    },
+    {
+      "id": "unexpected-error",
+      "match": "[Automatic Clay Former] Unexpected error, pausing automatic forming briefly",
+      "side": "client",
+      "level": "problem",
+      "title": "automaticclayformer:doctor-known-unexpected-title",
+      "explain": "automaticclayformer:doctor-known-unexpected-why",
+      "advice": "automaticclayformer:doctor-known-unexpected-advice"
+    }
+  ],
+  "conflicts": [
+    {
+      "with": "clayformer",
+      "level": "warning",
+      "why": "That's the original Automatic Clay Former, by rekimchuk13. With both installed, two automatic formers work the same clay form at once and get in each other's way. Keep one and switch the other off."
+    },
+    {
+      "with": "clayformerprescko",
+      "level": "warning",
+      "why": "That's the 1.22 update of Automatic Clay Former, by prescko. With both installed, two automatic formers work the same clay form at once and get in each other's way. Keep one and switch the other off."
+    }
+  ],
+  "configFiles": [
+    "AutomaticClayFormer.json",
+    "AutomaticClayFormerServer.json"
+  ]
+}

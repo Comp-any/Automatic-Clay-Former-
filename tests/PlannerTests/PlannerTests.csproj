@@ -18,6 +18,8 @@
 
   <ItemGroup>
     <Compile Include="../../src/FormingPlanner.cs" Link="FormingPlanner.cs" />
+    <Compile Include="../../src/ClayFormSimulator.cs" Link="ClayFormSimulator.cs" />
+    <Compile Include="../../src/RecipeCheck.cs" Link="RecipeCheck.cs" />
   </ItemGroup>
 
   <ItemGroup>

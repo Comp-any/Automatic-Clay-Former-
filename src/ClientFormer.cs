@@ -66,6 +66,84 @@ namespace AutomaticClayFormer
 
         long Now => capi.World.ElapsedMilliseconds;
 
+        // ---- What Vintage Doctor's checks read (DoctorBridge): what went wrong this session, and why a form isn't worked ----
+
+        /// <summary>A problem shown in chat this session (or an unexpected error), counted.</summary>
+        public class SessionProblem
+        {
+            public string Text;
+            public int Count;
+            public long LastMs;
+            public bool Unexpected;
+        }
+
+        readonly List<SessionProblem> problems = new List<SessionProblem>();
+
+        public IReadOnlyList<SessionProblem> Problems => problems;
+
+        /// <summary>The mod's channel is connected: the server has the mod too.</summary>
+        public bool ServerHasMod => channel.Connected;
+
+        public long NowMs => Now;
+
+        /// <summary>Seconds left of a pause (out of clay, or after an unexpected error).</summary>
+        public double PausedSeconds => Math.Max(0, (pausedUntilMs - Now) / 1000.0);
+
+        /// <summary>Seconds before this form is tried again (after the server kept refusing changes, or just after finishing it).</summary>
+        public double CooldownSeconds(BlockPos pos)
+        {
+            return pos != null && cooldownUntil.TryGetValue(pos, out long until) ? Math.Max(0, (until - Now) / 1000.0) : 0;
+        }
+
+        public double RangeFor(IClientPlayer player) => EffectiveRange(player);
+
+        public double DistanceFromEyes(IClientPlayer player, BlockPos pos) => DistanceTo(EyePosition(player), pos);
+
+        /// <summary>The nearest clay form within the distance, whatever its state (for explaining why it isn't worked).</summary>
+        public BlockEntityClayForm NearestForm(IClientPlayer player, double maxDistance)
+        {
+            Vec3d eye = EyePosition(player);
+            int reach = (int)Math.Ceiling(maxDistance) + 1;
+            int baseX = (int)Math.Floor(eye.X), baseY = (int)Math.Floor(eye.Y), baseZ = (int)Math.Floor(eye.Z);
+            BlockPos pos = new BlockPos(baseX, baseY, baseZ, player.Entity.Pos.Dimension);
+            BlockEntityClayForm best = null;
+            double bestDistance = maxDistance;
+
+            for (int dx = -reach; dx <= reach; dx++)
+            {
+                for (int dy = -reach; dy <= reach; dy++)
+                {
+                    for (int dz = -reach; dz <= reach; dz++)
+                    {
+                        pos.Set(baseX + dx, baseY + dy, baseZ + dz);
+                        if (pos.Y < 0 || !(capi.World.BlockAccessor.GetBlockEntity(pos) is BlockEntityClayForm form)) continue;
+                        double distance = DistanceTo(eye, form.Pos);
+                        if (distance <= bestDistance)
+                        {
+                            best = form;
+                            bestDistance = distance;
+                        }
+                    }
+                }
+            }
+
+            return best;
+        }
+
+        void RecordProblem(string text, bool unexpected)
+        {
+            SessionProblem known = problems.Find(p => p.Text == text);
+            if (known == null)
+            {
+                if (problems.Count >= 20) problems.RemoveAt(0);
+                known = new SessionProblem { Text = text, Unexpected = unexpected };
+                problems.Add(known);
+            }
+
+            known.Count++;
+            known.LastMs = Now;
+        }
+
         public void OnGameTick(float dt)
         {
             try
@@ -80,6 +158,8 @@ namespace AutomaticClayFormer
                     capi.Logger.Error("[Automatic Clay Former] Unexpected error, pausing automatic forming briefly: " + e);
                     loggedError = true;
                 }
+
+                RecordProblem(e.GetType().Name + ": " + e.Message, true);
 
                 ClearTarget();
                 pausedUntilMs = Now + ErrorPauseMs;
@@ -98,6 +178,7 @@ namespace AutomaticClayFormer
             warnedNoServerSupport = false;
             warnedUnmodded = false;
             loggedError = false;
+            problems.Clear();
         }
 
         /// <summary>The server refused an add because there was no matching clay to pay with.</summary>
@@ -395,6 +476,7 @@ namespace AutomaticClayFormer
             long now = Now;
             if (now - lastProblemMessageMs < ProblemMessageIntervalMs) return;
             lastProblemMessageMs = now;
+            RecordProblem(message, false);   // counted as often as the chat shows it
             Chat(message, true);
         }
 

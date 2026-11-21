@@ -20,7 +20,7 @@ namespace AutomaticClayFormer
     {
         public const string ModId = "automaticclayformer";
         const string ChannelName = "automaticclayformer";
-        const string HarmonyId = "demonic69.automaticclayformer";
+        internal const string HarmonyId = "demonic69.automaticclayformer";
         const int TickIntervalMs = 25;
 
         // ---- Server side ----
@@ -51,6 +51,9 @@ namespace AutomaticClayFormer
         long helloListenerId;
         bool helloSent;
 
+        /// <summary>Automatic Clay Former's checks in Vintage Doctor, on this side; null when the doctor isn't installed here.</summary>
+        DoctorBridge doctor;
+
         public ClayFormerConfig Config { get; private set; } = new ClayFormerConfig();
 
         /// <summary>False while the server has automatic forming turned off (/clayformer server off).</summary>
@@ -80,7 +83,26 @@ namespace AutomaticClayFormer
 
             harmony = new Harmony(HarmonyId);
             harmony.PatchAll(typeof(ClayFormerModSystem).Assembly);
+
+            if (api.ModLoader.IsModEnabled(DoctorBridge.DoctorModId)) doctor = new DoctorBridge(this, api);
         }
+
+        // ---- What Vintage Doctor's checks read (DoctorBridge) ----
+
+        internal bool AllowAutomaticForming => serverConfig.AllowAutomaticForming;
+
+        /// <summary>
+        /// What a player's game has said about its version: 3 = 2.3.0 or newer, 2 = 2.2.0, 1 = 2.1.0, 0 = has the mod
+        /// but said no hello (before 2.1.0), -1 = no sign of the mod (none, or it hasn't been used yet).
+        /// </summary>
+        internal int PlayerVersionLevel(string playerUid)
+        {
+            if (playerUid == null) return -1;
+            if (playersWithCommands.TryGetValue(playerUid, out int level)) return level;
+            return playersWithMod.Contains(playerUid) ? 0 : -1;
+        }
+
+        internal ClientFormer Former => former;
 
         void OnToolModeRequest(IServerPlayer fromPlayer, ToolModeRequest request)
         {
@@ -132,6 +154,8 @@ namespace AutomaticClayFormer
             tickListenerId = api.World.RegisterGameTickListener(former.OnGameTick, TickIntervalMs);
             helloListenerId = api.World.RegisterGameTickListener(dt => TrySendHello(), 1000);
             api.Event.LeftWorld += OnLeftWorld;
+
+            if (api.ModLoader.IsModEnabled(DoctorBridge.DoctorModId)) doctor = new DoctorBridge(this, api);
         }
 
         /// <summary>
@@ -223,6 +247,20 @@ namespace AutomaticClayFormer
             TryStoreConfig(capi, Config);
         }
 
+        /// <summary>Vintage Doctor's fix "switch it on" (the same as /clayformer on).</summary>
+        internal void SetEnabled(bool on)
+        {
+            Config.Enabled = on;
+            SaveConfig();
+        }
+
+        /// <summary>Vintage Doctor's fix "stop it on servers without the mod" (the same as /clayformer unmodded off).</summary>
+        internal void SetWorkOnUnmoddedServers(bool on)
+        {
+            Config.WorkOnUnmoddedServers = on;
+            SaveConfig();
+        }
+
         // ---- /clayformer ----
 
         /// <summary>
@@ -305,7 +343,14 @@ namespace AutomaticClayFormer
         /// <summary>/clayformer server [on|off]: the server-wide switch. Every game that follows it (2.3.0 or newer) is told at once.</summary>
         TextCommandResult SetServerSwitch(TextCommandCallingArgs args)
         {
-            serverConfig.AllowAutomaticForming = args.Parsers[0].IsMissing ? !serverConfig.AllowAutomaticForming : (bool)args[0];
+            bool allow = args.Parsers[0].IsMissing ? !serverConfig.AllowAutomaticForming : (bool)args[0];
+            return TextCommandResult.Success(ApplyServerSwitch(allow, null));
+        }
+
+        /// <summary>The server-wide switch, from /clayformer server and from Vintage Doctor's fix. Returns what to say.</summary>
+        internal string ApplyServerSwitch(bool allow, string lang)
+        {
+            serverConfig.AllowAutomaticForming = allow;
             StoreServerConfig(sapi, serverConfig);
 
             IServerPlayer[] following = sapi.World.AllOnlinePlayers.OfType<IServerPlayer>()
@@ -313,7 +358,8 @@ namespace AutomaticClayFormer
                 .ToArray();
             if (following.Length > 0) serverChannel.SendPacket(ServerSwitchMessage(), following);
 
-            return TextCommandResult.Success(Lang.Get(serverConfig.AllowAutomaticForming ? "automaticclayformer:cmd-server-on" : "automaticclayformer:cmd-server-off"));
+            string key = allow ? "automaticclayformer:cmd-server-on" : "automaticclayformer:cmd-server-off";
+            return lang == null ? Lang.Get(key) : Lang.GetL(lang, key);
         }
 
         SettingsCommand ServerSwitchMessage()
@@ -409,7 +455,7 @@ namespace AutomaticClayFormer
                 Lang.Get(Config.WorkOnUnmoddedServers ? "automaticclayformer:on" : "automaticclayformer:off"));
         }
 
-        float Reach()
+        internal float Reach()
         {
             return capi?.World?.Player?.WorldData?.PickingRange ?? GlobalConstants.DefaultPickingRange;
         }
@@ -456,6 +502,7 @@ namespace AutomaticClayFormer
                 harmony = null;
             }
 
+            doctor = null;
             playersWithMod.Clear();
             playersWithCommands.Clear();
             if (ServerInstance == this) ServerInstance = null;

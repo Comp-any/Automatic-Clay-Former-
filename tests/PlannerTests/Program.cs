@@ -17,7 +17,6 @@ namespace AutomaticClayFormer.Tests
     /// </summary>
     public static class Program
     {
-        const int MaxActions = 4096;
 
         class Result
         {
@@ -170,81 +169,58 @@ namespace AutomaticClayFormer.Tests
                 return 1;
             }
 
-            return failed.Count == 0 ? 0 : 1;
+            // The server's recipe check (shown in Vintage Doctor) must tell apart recipes that can't be finished
+            int sanityFailures = 0;
+
+            // Nothing on the bottom layer: the starting 8x8 square would have to go, and an empty form is deleted
+            bool[,,] floating = new bool[16, 16, 16];
+            for (int x = 6; x < 10; x++)
+            {
+                for (int z = 6; z < 10; z++) floating[x, 3, z] = true;
+            }
+
+            RecipeSimulation impossible = RecipeCheck.Simulate(floating);
+            Console.WriteLine("Recipe check, nothing on the bottom layer: " + (impossible.Finished ? "finished" : "not finished, " + impossible.Error));
+            if (impossible.Finished || impossible.Error == null)
+            {
+                Console.WriteLine("::error title=Recipe check::a recipe with nothing on its bottom layer was reported as one automatic forming can finish");
+                sanityFailures++;
+            }
+
+            RecipeSimulation empty = RecipeCheck.Simulate(new bool[16, 16, 16]);
+            Console.WriteLine("Recipe check, no voxels: " + (empty.Finished ? "finished" : "not finished, " + empty.Error));
+            if (empty.Finished || empty.Error == null)
+            {
+                Console.WriteLine("::error title=Recipe check::a recipe with no voxels was reported as one automatic forming can finish");
+                sanityFailures++;
+            }
+
+            RecipeSimulation wrongSize = RecipeCheck.Simulate(new bool[8, 8, 8]);
+            if (wrongSize.Finished || wrongSize.Error == null)
+            {
+                Console.WriteLine("::error title=Recipe check::a recipe of the wrong size was reported as one automatic forming can finish");
+                sanityFailures++;
+            }
+
+            Console.WriteLine(string.Format(CultureInfo.InvariantCulture,
+                "::notice title=Recipe check::{0} of 3 impossible recipes were told apart", 3 - sanityFailures));
+
+            return failed.Count == 0 && sanityFailures == 0 ? 0 : 1;
         }
 
+        /// <summary>Works the recipe with <see cref="RecipeCheck.Simulate"/>: the same code the server runs for Vintage Doctor.</summary>
         static Result Run(string name, bool[,,] recipe, int onlyToolMode = -1)
         {
             Result result = new Result { Name = name, Recipe = recipe };
-            int voxelCount = 0;
-            foreach (bool v in recipe)
-            {
-                if (v) voxelCount++;
-            }
-
-            result.Voxels = voxelCount;
+            result.Voxels = RecipeCheck.CountVoxels(recipe);
             // Same formula the game uses for the clay count in the recipe picker
-            result.ClayEstimate = (int)Math.Ceiling(Math.Max(1, (voxelCount - 64) / 25f));
+            result.ClayEstimate = RecipeCheck.ClayEstimate(recipe);
 
-            VanillaClayForm form = new VanillaClayForm(recipe);
-            int mismatches = FormingPlanner.CountMismatches(form.Voxels, recipe);
-
-            while (true)
-            {
-                if (!FormingPlanner.TryPlan(form.Voxels, recipe, form.ToolMode, out FormingAction action, onlyToolMode)) break;
-
-                if (onlyToolMode >= 0 && action.ToolMode != onlyToolMode)
-                {
-                    result.Error = "click " + (result.Actions + 1) + " (" + action + ") used another tool than the only one allowed";
-                    break;
-                }
-
-                if (action.ToolMode != form.ToolMode)
-                {
-                    result.ToolSwitches++;
-                    form.ToolMode = action.ToolMode;
-                }
-
-                bool[,,] before = (bool[,,])form.Voxels.Clone();
-                form.Use(action.X, action.Y, action.Z, action.Remove);
-                result.Actions++;
-
-                int now = FormingPlanner.CountMismatches(form.Voxels, recipe);
-                int broken = CountBroken(before, form.Voxels, recipe);
-
-                if (broken > 0)
-                {
-                    result.Error = "click " + result.Actions + " (" + action + ") broke " + broken + " correct voxel(s)";
-                    break;
-                }
-
-                if (mismatches - now != action.Gain)
-                {
-                    result.Error = "click " + result.Actions + " (" + action + ") fixed " + (mismatches - now) + " voxel(s) instead of " + action.Gain;
-                    break;
-                }
-
-                if (!form.HasAnyVoxel())
-                {
-                    result.Error = "click " + result.Actions + " (" + action + ") emptied the form, the game would delete it";
-                    break;
-                }
-
-                mismatches = now;
-
-                if (result.Actions > MaxActions)
-                {
-                    result.Error = "did not finish within " + MaxActions + " clicks";
-                    break;
-                }
-            }
-
-            result.ClayUsed = form.ClayUsed;
-
-            if (result.Error == null && FormingPlanner.CountMismatches(form.Voxels, recipe) != 0)
-            {
-                result.Error = "stopped before finishing";
-            }
+            RecipeSimulation simulation = RecipeCheck.Simulate(recipe, onlyToolMode);
+            result.Actions = simulation.Clicks;
+            result.ToolSwitches = simulation.ToolSwitches;
+            result.ClayUsed = simulation.ClayUsed;
+            result.Error = simulation.Error;
 
             // The game charges a clay when the pool is empty, so you can use at most one more than its estimate.
             if (result.Error == null && result.ClayUsed > result.ClayEstimate + 1)
@@ -253,24 +229,6 @@ namespace AutomaticClayFormer.Tests
             }
 
             return result;
-        }
-
-        /// <summary>Voxels that matched the recipe before a click and don't after it.</summary>
-        static int CountBroken(bool[,,] before, bool[,,] after, bool[,,] recipe)
-        {
-            int broken = 0;
-            for (int x = 0; x < 16; x++)
-            {
-                for (int y = 0; y < 16; y++)
-                {
-                    for (int z = 0; z < 16; z++)
-                    {
-                        if (before[x, y, z] == recipe[x, y, z] && after[x, y, z] != recipe[x, y, z]) broken++;
-                    }
-                }
-            }
-
-            return broken;
         }
 
         static JToken Get(JToken token, string property)

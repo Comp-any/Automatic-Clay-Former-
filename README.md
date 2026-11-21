@@ -48,6 +48,19 @@ Settings are saved to `ModConfig/AutomaticClayFormer.json`, which you can also e
 }
 ```
 
+## With Vintage Doctor
+
+When [Vintage Doctor](https://mods.vintagestory.at/show/mod/80941) is installed too, Automatic Clay Former adds its own checks to it (Ctrl+Shift+D, or `/doctor`). Neither mod needs the other: everything goes over the game's event bus.
+
+- **On the check-up:**
+  - **On the server:** whether automatic forming takes clay like forming by hand (the change that does it is in place, and which other mods change the same step); whether the server has automatic forming turned off, with a button to allow it again; which players online have which version; and whether every clay forming recipe in the game, other mods' included, can be finished automatically.
+  - **In your game:** whether automatic forming works where you are, and if not, why (your setting, the server's switch, a server without the mod), settings worth a second look, and what went wrong this session. Buttons switch automatic forming on, or stop it on servers without the mod.
+- **A page, "Automatic Clay Former isn't shaping my clay"** (`/doctor clayformer`): your game goes through every reason the clay form you look at (or the nearest one) isn't being worked: the setting, the server, the clay in your hand, the recipe, the clay type, the distance, land claims, a pause after the server refused changes, and the tool on a server without the mod. The server's half sits above it.
+- **On the doctor's page about an item or block:** whether Automatic Clay Former can make it, and in about how many clicks and how much clay.
+- **What the mod's log lines mean** (a settings file it couldn't read, with a button to start it afresh; settings it couldn't save; an unexpected error), and a warning when one of the older clay formers (`clayformer`, `clayformerprescko`) is installed alongside: two automatic formers working one clay form get in each other's way.
+
+The recipe check works each recipe on a simulated clay form with the same rules as the game, on a background thread a few seconds after the server starts, and only when Vintage Doctor is installed.
+
 ## Changes from the 1.22 update by prescko
 
 - **Clay is used properly.** Each add costs clay the same way forming by hand does: when the form's voxel pool is empty, one clay is taken from your hand for 25 more voxels. Before, only the clay used to place the form was ever taken.
@@ -70,11 +83,11 @@ dotnet build AutomaticClayFormer.csproj -c Release -p:VintageStoryDir="/path/to/
 
 A Release build writes the mod zip to `release/`. You can also set the `VINTAGE_STORY` environment variable instead of passing `VintageStoryDir`.
 
-GitHub Actions builds every push against the official Vintage Story server files, runs the tests, and uploads the zip as a build artifact. A push to `main` with a new version in `modinfo.json` (one with no release yet) also publishes it once it has built and passed the tests: it tags `v` + the version and puts the zip on the release, with `RELEASE_NOTES.md` as its notes. **Actions → Build → Run workflow** with **Publish** ticked, or pushing a tag like `v2.1.0`, does the same (and replaces the zip of an existing release).
+GitHub Actions builds every push against the official Vintage Story server files, runs the tests, then starts a real server with the mod and Vintage Doctor (from the Mod DB) and checks the doctor's answers from the server console. The results (logs, the doctor's answers, the zip) are pushed to the branch `ci-results-<branch>`, and the zip is also uploaded as a build artifact. A push to `main` with a new version in `modinfo.json` (one with no release yet) also publishes it once it has built and passed the tests: it tags `v` + the version and puts the zip on the release, with `RELEASE_NOTES.md` as its notes. **Actions → Build → Run workflow** with **Publish** ticked, or pushing a tag like `v2.1.0`, does the same (and replaces the zip of an existing release).
 
 ### Tests
 
-`tests/PlannerTests` runs the forming logic against every vanilla clay forming recipe, plus hundreds of random shapes, using a copy of the game's clay form rules. It checks that every click only moves the form towards the recipe, that every recipe gets finished, and that clay use is in line with the game's own estimate.
+`tests/PlannerTests` runs the forming logic against every vanilla clay forming recipe, plus hundreds of random shapes, using a copy of the game's clay form rules (`src/ClayFormSimulator.cs`, which the server's recipe check for Vintage Doctor uses too). It checks that every click only moves the form towards the recipe, that every recipe gets finished, and that clay use is in line with the game's own estimate.
 
 ```bash
 dotnet run --project tests/PlannerTests/PlannerTests.csproj -c Release -p:VintageStoryDir="/path/to/Vintagestory" -- "/path/to/Vintagestory"

@@ -1,12 +1,14 @@
 using System;
 
-namespace AutomaticClayFormer.Tests
+namespace AutomaticClayFormer
 {
     /// <summary>
     /// The server side rules of a vanilla clay form (BlockEntityClayForm, game 1.22), plus the clay charging this mod
-    /// adds on the server. Kept as close to the game code as possible so the planner is tested against real behavior.
+    /// adds on the server. Kept as close to the game code as possible so the planner is tested against real behavior:
+    /// by the tests (every vanilla recipe) and, with Vintage Doctor installed, by the server's check of every clay
+    /// forming recipe in the game (<see cref="RecipeCheck"/>). Plain C#, no game objects, so it can run on any thread.
     /// </summary>
-    public class VanillaClayForm
+    public class ClayFormSimulator
     {
         const int Size = 16;
 
@@ -16,7 +18,7 @@ namespace AutomaticClayFormer.Tests
         public int ClayUsed;
         public int ToolMode;
 
-        public VanillaClayForm(bool[,,] recipe)
+        public ClayFormSimulator(bool[,,] recipe)
         {
             Recipe = recipe;
 
