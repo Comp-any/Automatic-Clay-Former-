@@ -768,7 +768,7 @@ namespace AutomaticClayFormer
             public readonly List<string> Details = new List<string>();
             public string Advice;
             public string Fix;
-            public string FixArgument;
+            public string FixArgument = null;   // none of the mod's fixes takes an argument yet
             public string FixLabel;
             public string Link;
             public string LinkArgument;
