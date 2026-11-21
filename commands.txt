@@ -1,0 +1,10 @@
+>>> /doctor
+>>> /doctor clayformer
+>>> /doctor mod automaticclayformer
+>>> /doctor item game:clayoven-north
+>>> /doctor api
+>>> /clayformer server off
+>>> /doctor clayformer
+>>> /doctor fix bus:automaticclayformer:server-on
+>>> /doctor clayformer
+>>> /stop
