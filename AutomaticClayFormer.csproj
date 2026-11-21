@@ -8,9 +8,9 @@
     <Nullable>disable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
-    <!-- Keep in sync with modinfo.json -->
     <ModId>automaticclayformer</ModId>
-    <Version>2.0.0</Version>
+    <!-- The version is read from modinfo.json, so the zip's name can't fall behind it (it said 2.0.0 up to 2.3.0) -->
+    <Version>$([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/modinfo.json')), '(?s)^.*?"version"\s*:\s*"([^"]+)".*$', '$1'))</Version>
 
     <!--
       Folder of a Vintage Story install (client or server) to compile against.

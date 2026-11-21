@@ -48,7 +48,9 @@ needs no `sleep`.
 
 GitHub Actions (`.github/workflows/build.yml`) builds every push against the official Vintage Story server
 files, checks the texts (`tools/check_lang.py`: every text the code or `vintagedoctor.json` uses is in `en.json` with the
-right number of `{n}`), runs `tests/PlannerTests`, then runs a real server with the mod and Vintage Doctor (downloaded
+right number of `{n}`) and what gets published (`tools/check_release.py`: only modinfo.json keys the game knows,
+demonic69 first, the release notes' version, and with `--zip` the zip's name and contents; the csproj reads the version
+from modinfo.json), runs `tests/PlannerTests`, then runs a real server with the mod and Vintage Doctor (downloaded
 from the Mod DB) and drives `/doctor ...` from its console (2.4.0+). Everything is pushed to the branch
 **`ci-results-<branch>`** (build.log, test.log, server-console.log with the doctor's answers, server-test.txt with
 PASS/FAIL lines, server-main.log, the zip): `git fetch origin ci-results-<branch>` then `git show FETCH_HEAD:server-test.txt`.

@@ -404,8 +404,10 @@ namespace AutomaticClayFormer
 
                 RecipeReport report = new RecipeReport { Entries = entries, Seconds = (DateTime.UtcNow - start).TotalSeconds };
                 int broken = entries.Count(e => !e.Result.Finished);
-                sapi.Logger.Notification("[Automatic Clay Former] Checked {0} clay forming recipes for Vintage Doctor in {1}s: {2} can't be finished automatically.",
-                    entries.Count, Format(report.Seconds), broken);
+                RecipeEntry longest = entries.Where(e => e.Result.Finished).OrderByDescending(e => e.Result.Clicks).FirstOrDefault();
+                sapi.Logger.Notification("[Automatic Clay Former] Checked {0} clay forming recipes for Vintage Doctor in {1}s: {2} can't be finished automatically{3}.",
+                    entries.Count, Format(report.Seconds), broken,
+                    longest == null ? "" : "; the longest, " + longest.Code + ", takes " + longest.Result.Clicks + " clicks");
                 recipes = report;
                 recipeCheckRunning = false;
             });

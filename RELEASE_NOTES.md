@@ -7,6 +7,8 @@
 - **On an item's page:** whether Automatic Clay Former can make it, in about how many clicks and how much clay.
 - The doctor also explains the mod's log messages (a settings file it couldn't read, with a button to start it afresh) and warns when an older clay former is installed alongside.
 
+**Fixed:** the zip was still called `automaticclayformer_2.0.0.zip` in every release since 2.0.0. It's now named after its version.
+
 **Install:** put the zip in your `Mods` folder. In multiplayer the server should have it too, so automatic forming takes clay like forming by hand.
 
 ---
